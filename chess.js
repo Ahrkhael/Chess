@@ -68,6 +68,10 @@ class Pieza {
                 break
         }
     }
+
+    moverPieza(nombre){
+        
+    }
 }
 
 const rellenarTableroInicial = () => {
@@ -234,3 +238,32 @@ const rellenarTableroInicial = () => {
 }
 
 rellenarTableroInicial()
+
+let piezaSeleccionada = null;
+let casillaOrigen = null;
+
+document.querySelectorAll('.casilla').forEach(casilla => {
+    casilla.addEventListener('click', () => {
+        if (piezaSeleccionada) {
+            moverPieza(casilla)
+        } else if (casilla.querySelector('.piezas')) {
+            seleccionarPieza(casilla)
+        }
+    });
+});
+
+function seleccionarPieza(casilla) {
+    piezaSeleccionada = casilla.querySelector('.piezas')
+    casillaOrigen = casilla
+    casilla.dataset.originalColor = casilla.style.backgroundColor; // Guardar el color original
+    casilla.style.backgroundColor = 'yellow'
+}
+
+function moverPieza(casilla) {
+    if (casilla !== casillaOrigen && (!casilla.querySelector('.piezas') || casilla.querySelector('.piezas').dataset.color !== piezaSeleccionada.dataset.color)) {
+        casilla.appendChild(piezaSeleccionada)
+        casillaOrigen.style.backgroundColor = casillaOrigen.dataset.originalColor; // Restaurar el color original
+        piezaSeleccionada = null
+        casillaOrigen = null
+    }
+}
