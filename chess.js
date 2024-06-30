@@ -42,22 +42,16 @@ class Pieza {
 
 const rellenarTableroInicial = () => {
     
-    for(let i=0; i<8; i++) {
+    for (let i=0; i<8; i++) {
         
-        if (i===1) {
+        const casilla = document.getElementsByClassName("casilla")[i+8]
+        const pieza = document.createElement("p")
+        casilla.appendChild(pieza)
 
-            for (let j=0; j<8; j++) {
-                
-                const casilla = document.getElementsByClassName("casilla")[j+8]
-                const pieza = document.createElement("p")
-                casilla.appendChild(pieza)
+        pieza.classList.add("piezas")
 
-                pieza.classList.add("piezas")
-
-                const peon = new Pieza("peon negro")
-                pieza.innerHTML = peon.figura
-            }
-        }
+        const peon = new Pieza("peon negro")
+        pieza.innerHTML = peon.figura
     }
 }
 
