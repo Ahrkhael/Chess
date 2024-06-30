@@ -260,7 +260,9 @@ function seleccionarPieza(casilla) {
 }
 
 function moverPieza(casilla) {
+
     if (casilla !== casillaOrigen && (!casilla.querySelector('.piezas') || casilla.querySelector('.piezas').dataset.color !== piezaSeleccionada.dataset.color)) {
+        
         casilla.appendChild(piezaSeleccionada)
         casillaOrigen.style.backgroundColor = casillaOrigen.dataset.originalColor; // Restaurar el color original
         piezaSeleccionada = null
