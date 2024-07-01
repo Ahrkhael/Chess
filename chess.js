@@ -29,6 +29,7 @@ for(let i=0; i<8; i++) {
 class Pieza {
     constructor(nombre) {
         this.nombre=nombre
+        this.color = nombre.includes("blanco") ? "blanco" : "negro";
         switch (nombre) {
             case "peon blanco":
                 this.figura="\u{2659}"
@@ -42,10 +43,10 @@ class Pieza {
             case "rey negro":
                 this.figura="\u{265A}"
                 break
-            case "reina blanca":
+            case "reina blanco":
                 this.figura="\u{2655}"
                 break
-            case "reina negra":
+            case "reina negro":
                 this.figura="\u{265B}"
                 break
             case "caballo blanco":
@@ -54,10 +55,10 @@ class Pieza {
             case "caballo negro":
                 this.figura="\u{265E}"
                 break
-            case "torre blanca":
+            case "torre blanco":
                 this.figura="\u{2656}"
                 break
-            case "torre negra":
+            case "torre negro":
                 this.figura="\u{265C}"
                 break
             case "alfil blanco":
@@ -90,7 +91,6 @@ const rellenarTableroInicial = () => {
         casilla = document.getElementsByClassName("casilla")[i+48]
         pieza = document.createElement("p")
         casilla.appendChild(pieza)
-
         pieza.classList.add("piezas")
 
         const peonBlanco = new Pieza("peon blanco")
@@ -120,7 +120,7 @@ const rellenarTableroInicial = () => {
             
             case 3:
                 
-                const reinaBlanca = new Pieza("reina blanca")
+                const reinaBlanca = new Pieza("reina blanco")
                 
                 casilla = document.getElementsByClassName("casilla")[59]
                 pieza = document.createElement("p")
@@ -128,7 +128,7 @@ const rellenarTableroInicial = () => {
                 pieza.classList.add("piezas")
                 pieza.innerHTML = reinaBlanca.figura
 
-                const reinaNegra = new Pieza("reina negra")
+                const reinaNegra = new Pieza("reina negro")
                 
                 casilla = document.getElementsByClassName("casilla")[3]
                 pieza = document.createElement("p")
@@ -204,7 +204,7 @@ const rellenarTableroInicial = () => {
             
             case 0 || 7:
             
-                const torreBlanca = new Pieza("torre blanca")
+                const torreBlanca = new Pieza("torre blanco")
 
                 casilla = document.getElementsByClassName("casilla")[56]
                 pieza = document.createElement("p")
@@ -218,7 +218,7 @@ const rellenarTableroInicial = () => {
                 pieza.classList.add("piezas")
                 pieza.innerHTML = torreBlanca.figura
 
-                const torreNegra = new Pieza("torre negra")
+                const torreNegra = new Pieza("torre negro")
 
                 casilla = document.getElementsByClassName("casilla")[0]
                 pieza = document.createElement("p")
@@ -260,10 +260,34 @@ function seleccionarPieza(casilla) {
 }
 
 function moverPieza(casilla) {
-    if (casilla !== casillaOrigen && (!casilla.querySelector('.piezas') || casilla.querySelector('.piezas').dataset.color !== piezaSeleccionada.dataset.color)) {
-        casilla.appendChild(piezaSeleccionada)
-        casillaOrigen.style.backgroundColor = casillaOrigen.dataset.originalColor; // Restaurar el color original
-        piezaSeleccionada = null
-        casillaOrigen = null
+    if (!piezaSeleccionada) return;
+
+    // Verificar que no sea la misma casilla de origen
+    if (casilla === casillaOrigen) {
+        deseleccionarPieza();
+        return;
     }
+
+    // Verificar que no haya una pieza del mismo color en la casilla destino
+    const piezaEnDestino = casilla.querySelector('.piezas');
+    if (piezaEnDestino && piezaEnDestino.innerHTML.charCodeAt(0) >= 9812 && piezaEnDestino.innerHTML.charCodeAt(0) <= 9817 && piezaSeleccionada.innerHTML.charCodeAt(0) >= 9812 && piezaSeleccionada.innerHTML.charCodeAt(0) <= 9817) {
+        deseleccionarPieza();
+        return;
+    }
+
+    if (piezaEnDestino && piezaEnDestino.innerHTML.charCodeAt(0) >= 9820 && piezaEnDestino.innerHTML.charCodeAt(0) <= 9823 && piezaSeleccionada.innerHTML.charCodeAt(0) >= 9820 && piezaSeleccionada.innerHTML.charCodeAt(0) <= 9823) {
+        deseleccionarPieza();
+        return;
+    }
+
+    // Eliminar la pieza en la casilla destino si existe
+    if (piezaEnDestino) {
+        piezaEnDestino.remove();
+    }
+
+    // Mover la pieza
+    casilla.appendChild(piezaSeleccionada);
+    casillaOrigen.style.backgroundColor = casillaOrigen.dataset.originalColor; // Restaurar el color original
+    piezaSeleccionada = null;
+    casillaOrigen = null;
 }
