@@ -29,7 +29,6 @@ for(let i=0; i<8; i++) {
 class Pieza {
     constructor(nombre) {
         this.nombre=nombre
-        this.color = nombre.includes("blanco") ? "blanco" : "negro";
         switch (nombre) {
             case "peon blanco":
                 this.figura="\u{2659}"
@@ -43,10 +42,10 @@ class Pieza {
             case "rey negro":
                 this.figura="\u{265A}"
                 break
-            case "reina blanco":
+            case "reina blanca":
                 this.figura="\u{2655}"
                 break
-            case "reina negro":
+            case "reina negra":
                 this.figura="\u{265B}"
                 break
             case "caballo blanco":
@@ -55,10 +54,10 @@ class Pieza {
             case "caballo negro":
                 this.figura="\u{265E}"
                 break
-            case "torre blanco":
+            case "torre blanca":
                 this.figura="\u{2656}"
                 break
-            case "torre negro":
+            case "torre negra":
                 this.figura="\u{265C}"
                 break
             case "alfil blanco":
@@ -120,7 +119,7 @@ const rellenarTableroInicial = () => {
             
             case 3:
                 
-                const reinaBlanca = new Pieza("reina blanco")
+                const reinaBlanca = new Pieza("reina blanca")
                 
                 casilla = document.getElementsByClassName("casilla")[59]
                 pieza = document.createElement("p")
@@ -128,7 +127,7 @@ const rellenarTableroInicial = () => {
                 pieza.classList.add("piezas")
                 pieza.innerHTML = reinaBlanca.figura
 
-                const reinaNegra = new Pieza("reina negro")
+                const reinaNegra = new Pieza("reina negra")
                 
                 casilla = document.getElementsByClassName("casilla")[3]
                 pieza = document.createElement("p")
@@ -204,7 +203,7 @@ const rellenarTableroInicial = () => {
             
             case 0 || 7:
             
-                const torreBlanca = new Pieza("torre blanco")
+                const torreBlanca = new Pieza("torre blanca")
 
                 casilla = document.getElementsByClassName("casilla")[56]
                 pieza = document.createElement("p")
@@ -218,7 +217,7 @@ const rellenarTableroInicial = () => {
                 pieza.classList.add("piezas")
                 pieza.innerHTML = torreBlanca.figura
 
-                const torreNegra = new Pieza("torre negro")
+                const torreNegra = new Pieza("torre negra")
 
                 casilla = document.getElementsByClassName("casilla")[0]
                 pieza = document.createElement("p")
