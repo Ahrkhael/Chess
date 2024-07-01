@@ -90,7 +90,6 @@ const rellenarTableroInicial = () => {
         casilla = document.getElementsByClassName("casilla")[i+48]
         pieza = document.createElement("p")
         casilla.appendChild(pieza)
-
         pieza.classList.add("piezas")
 
         const peonBlanco = new Pieza("peon blanco")
@@ -260,10 +259,34 @@ function seleccionarPieza(casilla) {
 }
 
 function moverPieza(casilla) {
-    if (casilla !== casillaOrigen && (!casilla.querySelector('.piezas') || casilla.querySelector('.piezas').dataset.color !== piezaSeleccionada.dataset.color)) {
-        casilla.appendChild(piezaSeleccionada)
-        casillaOrigen.style.backgroundColor = casillaOrigen.dataset.originalColor; // Restaurar el color original
-        piezaSeleccionada = null
-        casillaOrigen = null
+    if (!piezaSeleccionada) return;
+
+    // Verificar que no sea la misma casilla de origen
+    if (casilla === casillaOrigen) {
+        deseleccionarPieza();
+        return;
     }
+
+    // Verificar que no haya una pieza del mismo color en la casilla destino
+    const piezaEnDestino = casilla.querySelector('.piezas');
+    if (piezaEnDestino && piezaEnDestino.innerHTML.charCodeAt(0) >= 9812 && piezaEnDestino.innerHTML.charCodeAt(0) <= 9817 && piezaSeleccionada.innerHTML.charCodeAt(0) >= 9812 && piezaSeleccionada.innerHTML.charCodeAt(0) <= 9817) {
+        deseleccionarPieza();
+        return;
+    }
+
+    if (piezaEnDestino && piezaEnDestino.innerHTML.charCodeAt(0) >= 9820 && piezaEnDestino.innerHTML.charCodeAt(0) <= 9823 && piezaSeleccionada.innerHTML.charCodeAt(0) >= 9820 && piezaSeleccionada.innerHTML.charCodeAt(0) <= 9823) {
+        deseleccionarPieza();
+        return;
+    }
+
+    // Eliminar la pieza en la casilla destino si existe
+    if (piezaEnDestino) {
+        piezaEnDestino.remove();
+    }
+
+    // Mover la pieza
+    casilla.appendChild(piezaSeleccionada);
+    casillaOrigen.style.backgroundColor = casillaOrigen.dataset.originalColor; // Restaurar el color original
+    piezaSeleccionada = null;
+    casillaOrigen = null;
 }
