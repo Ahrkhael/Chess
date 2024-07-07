@@ -1,269 +1,441 @@
-const tablero = document.getElementById("board")
-
+// At the beginning, we must create the board
+const board = document.getElementById("board")
+let square = null
 for(let i=0; i<8; i++) {
 
-    const linea = document.createElement("div")
-    linea.classList.add("linea")
-    tablero.appendChild(linea)
+    const row = document.createElement("div")
+    row.classList.add("row")
+    board.appendChild(row)
 
     for (let j=0; j<8; j++) {
 
-        const casilla = document.createElement("div")
-        casilla.classList.add("casilla")
+        square = document.createElement("div")
+        square.classList.add("square")
 
         if ((i+j)%2===0) {
-            casilla.style.backgroundColor="#FFF8DC"
+            square.style.backgroundColor="#FFF8DC"
         }else {
-            casilla.style.backgroundColor="#DEB887"
+            square.style.backgroundColor="#DEB887"
         }
 
-        linea.appendChild(casilla)
+        row.appendChild(square)
+        square.dataset.row = 8-i //The first row will be the bottom one
+        square.dataset.column = j+1
 
         if(j===7) {
             const br = document.createElement("br")
-            linea.appendChild(br)
+            row.appendChild(br)
         }
     }
 }
 
-class Pieza {
-    constructor(nombre) {
-        this.nombre=nombre
-        switch (nombre) {
-            case "peon blanco":
-                this.figura="\u{2659}"
-                break
-            case "peon negro":
-                this.figura="\u{265F}"
-                break
-            case "rey blanco":
-                this.figura="\u{2654}"
-                break
-            case "rey negro":
-                this.figura="\u{265A}"
-                break
-            case "reina blanca":
-                this.figura="\u{2655}"
-                break
-            case "reina negra":
-                this.figura="\u{265B}"
-                break
-            case "caballo blanco":
-                this.figura="\u{2658}"
-                break
-            case "caballo negro":
-                this.figura="\u{265E}"
-                break
-            case "torre blanca":
-                this.figura="\u{2656}"
-                break
-            case "torre negra":
-                this.figura="\u{265C}"
-                break
-            case "alfil blanco":
-                this.figura="\u{2657}"
-                break
-            case "alfil negro":
-                this.figura="\u{265D}"
-                break
-        }
-    }
+// Create a class for every chess piece
+class King {
+    constructor(player) {
+        this.player = player
+        this.hasMoved = false
 
-    moverPieza(nombre){
-        
+        if(player==="white") {
+            this.figure="\u{2654}"
+        }else if(player==="black") {
+            this.figure="\u{265A}"
+        }else {
+            throw new Error("Player must be white or black")
+        }
     }
 }
 
-const rellenarTableroInicial = () => {
+class Queen {
+    constructor(player) {
+        this.player = player
+
+        if(player==="white") {
+            this.figure="\u{2655}"
+        }else if(player==="black") {
+            this.figure="\u{265B}"
+        }else {
+            throw new Error("Player must be white or black")
+        }
+    }
+}
+
+class Pawn {
+    constructor(player) {
+        this.player = player
+
+        if(player==="white") {
+            this.figure="\u{2659}"
+        }else if(player==="black") {
+            this.figure="\u{265F}"
+        }else {
+            throw new Error("Player must be white or black")
+        }
+    }
+    isLegalMove(square, squareOrigin) {
+        if(this.player === "white") {
+            if(squareOrigin.dataset.column === square.dataset.column) {
+                if(square.dataset.row == Number(squareOrigin.dataset.row) + 1 && !square.querySelector('.pieces')) {
+                    return true
+                }else if (squareOrigin.dataset.row == 2 && square.dataset.row == 4) {
+                    return true
+                }
+            }
+        }else if(this.player === "black") {
+            if(squareOrigin.dataset.column === square.dataset.column) {
+                if(square.dataset.row == Number(squareOrigin.dataset.row) - 1 && !square.querySelector('.pieces')) {
+                    return true
+                }else if (squareOrigin.dataset.row == 7 && square.dataset.row == 5) {
+                    return true
+                }
+            }
+        }
+    }
+}
+
+class Knight {
+    constructor(player) {
+        this.player = player
+
+        if(player==="white") {
+            this.figure="\u{2658}"
+        }else if(player==="black") {
+            this.figure="\u{265E}"
+        }else {
+            throw new Error("Player must be white or black")
+        }
+    }
+}
+
+class Bishop {
+    constructor(player) {
+        this.player = player
+
+        if(player==="white") {
+            this.figure="\u{2657}"
+        }else if(player==="black") {
+            this.figure="\u{265D}"
+        }else {
+            throw new Error("Player must be white or black")
+        }
+    }
+    isLegalMove(square, squareOrigin) {
+        for(let i=1; i<8; i++) {
+            if(
+                square.dataset.row == Number(squareOrigin.dataset.row) + i * 1 && 
+                square.dataset.column == Number(squareOrigin.dataset.column) + i * 1
+            ) {
+                return true
+            }else if(
+                square.dataset.row == Number(squareOrigin.dataset.row) - i * 1 && 
+                square.dataset.column == Number(squareOrigin.dataset.column) + i * 1
+            ) {
+                return true
+            }else if(
+                square.dataset.row == Number(squareOrigin.dataset.row) + i * 1 && 
+                square.dataset.column == Number(squareOrigin.dataset.column) - i * 1
+            ) {
+                return true
+            }else if(
+                square.dataset.row == Number(squareOrigin.dataset.row) - i * 1 && 
+                square.dataset.column == Number(squareOrigin.dataset.column) - i * 1
+            ) {
+                return true
+            }
+        }
+    }
+}
+
+class Tower {
+    constructor(player) {
+        this.player = player
+        this.hasMoved = false
+
+        if(player==="white") {
+            this.figure="\u{2656}"
+        }else if(player==="black") {
+            this.figure="\u{265C}"
+        }else {
+            throw new Error("Player must be white or black")
+        }
+    }
+}
+
+const whitePawn = new Pawn("white")
+const blackPawn = new Pawn("black")
+
+const whiteKing = new King("white")
+const blackKing = new King("black")
+
+const whiteQueen = new Queen("white")
+const blackQueen = new Queen("black")
+
+const whiteKnight = new Knight("white")
+const blackKnight = new Knight("black")
+
+const whiteBishop = new Bishop("white")
+const blackBishop = new Bishop("black")
+
+const whiteTower = new Tower("white")
+const blackTower = new Tower("black")
+
+// Function to fill the initial board
+const fillInitialBoard = () => {
 
     for (let i=0; i<8; i++) {
         
-        let casilla = document.getElementsByClassName("casilla")[i+8]
-        let pieza = document.createElement("p")
-        casilla.appendChild(pieza)
+        square = document.getElementsByClassName("square")[i+8]
+        let piece = document.createElement("p")
+        square.appendChild(piece)
 
-        pieza.classList.add("piezas")
+        piece.classList.add("pieces")
 
-        const peonNegro = new Pieza("peon negro")
-        pieza.innerHTML = peonNegro.figura
+        piece.innerHTML = blackPawn.figure
+        piece.dataset.player = "black"
+        piece.dataset.chessPiece = "pawn"
 
-        casilla = document.getElementsByClassName("casilla")[i+48]
-        pieza = document.createElement("p")
-        casilla.appendChild(pieza)
+        square = document.getElementsByClassName("square")[i+48]
+        piece = document.createElement("p")
+        square.appendChild(piece)
 
-        pieza.classList.add("piezas")
+        piece.classList.add("pieces")
 
-        const peonBlanco = new Pieza("peon blanco")
-        pieza.innerHTML = peonBlanco.figura
-
+        piece.innerHTML = whitePawn.figure
+        piece.dataset.player = "white"
+        piece.dataset.chessPiece = "pawn"
         
         switch (i) {
             case 4:
-                
-                const reyBlanco = new Pieza("rey blanco")
     
-                casilla = document.getElementsByClassName("casilla")[60]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = reyBlanco.figura
-
-                const reyNegro = new Pieza("rey negro")
+                square = document.getElementsByClassName("square")[60]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = whiteKing.figure
+                piece.dataset.player = "white"
+                piece.dataset.chessPiece = "king"
     
-                casilla = document.getElementsByClassName("casilla")[4]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = reyNegro.figura
+                square = document.getElementsByClassName("square")[4]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = blackKing.figure
+                piece.dataset.player = "black"
+                piece.dataset.chessPiece = "king"
 
                 break
             
             case 3:
                 
-                const reinaBlanca = new Pieza("reina blanca")
+                square = document.getElementsByClassName("square")[59]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = whiteQueen.figure
+                piece.dataset.player = "white"
+                piece.dataset.chessPiece = "queen"
                 
-                casilla = document.getElementsByClassName("casilla")[59]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = reinaBlanca.figura
-
-                const reinaNegra = new Pieza("reina negra")
-                
-                casilla = document.getElementsByClassName("casilla")[3]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = reinaNegra.figura
+                square = document.getElementsByClassName("square")[3]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = blackQueen.figure
+                piece.dataset.player = "black"
+                piece.dataset.chessPiece = "queen"
 
                 break    
             
             case 2 || 5:
-                
-                const alfilBlanco = new Pieza("alfil blanco")
 
-                casilla = document.getElementsByClassName("casilla")[58]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = alfilBlanco.figura
+                square = document.getElementsByClassName("square")[58]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = whiteBishop.figure
+                piece.dataset.player = "white"
+                piece.dataset.chessPiece = "bishop"
 
-                casilla = document.getElementsByClassName("casilla")[61]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = alfilBlanco.figura
+                square = document.getElementsByClassName("square")[61]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = whiteBishop.figure
+                piece.dataset.player = "white"
+                piece.dataset.chessPiece = "bishop"
 
-                const alfilNegro = new Pieza("alfil negro")
+                square = document.getElementsByClassName("square")[2]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = blackBishop.figure
+                piece.dataset.player = "black"
+                piece.dataset.chessPiece = "bishop"
 
-                casilla = document.getElementsByClassName("casilla")[2]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = alfilNegro.figura
-
-                casilla = document.getElementsByClassName("casilla")[5]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = alfilNegro.figura
+                square = document.getElementsByClassName("square")[5]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = blackBishop.figure
+                piece.dataset.player = "black"
+                piece.dataset.chessPiece = "bishop"
 
                 break
 
             case 1 || 6:
                 
-                const caballoBlanco = new Pieza("caballo blanco")
+                square = document.getElementsByClassName("square")[57]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = whiteKnight.figure
+                piece.dataset.player = "white"
+                piece.dataset.chessPiece = "knight"
 
-                casilla = document.getElementsByClassName("casilla")[57]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = caballoBlanco.figura
+                square = document.getElementsByClassName("square")[62]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = whiteKnight.figure
+                piece.dataset.player = "white"
+                piece.dataset.chessPiece = "knight"
 
-                casilla = document.getElementsByClassName("casilla")[62]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = caballoBlanco.figura
+                square = document.getElementsByClassName("square")[1]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = blackKnight.figure
+                piece.dataset.player = "black"
+                piece.dataset.chessPiece = "knight"
 
-                const caballoNegro = new Pieza("caballo negro")
-
-                casilla = document.getElementsByClassName("casilla")[1]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = caballoNegro.figura
-
-                casilla = document.getElementsByClassName("casilla")[6]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = caballoNegro.figura
+                square = document.getElementsByClassName("square")[6]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = blackKnight.figure
+                piece.dataset.player = "black"
+                piece.dataset.chessPiece = "knight"
 
                 break  
             
             case 0 || 7:
             
-                const torreBlanca = new Pieza("torre blanca")
-
-                casilla = document.getElementsByClassName("casilla")[56]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = torreBlanca.figura
+                square = document.getElementsByClassName("square")[56]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = whiteTower.figure
+                piece.dataset.player = "white"
+                piece.dataset.chessPiece = "tower"
                 
-                casilla = document.getElementsByClassName("casilla")[63]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = torreBlanca.figura
+                square = document.getElementsByClassName("square")[63]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = whiteTower.figure
+                piece.dataset.player = "white"
+                piece.dataset.chessPiece = "tower"
 
-                const torreNegra = new Pieza("torre negra")
-
-                casilla = document.getElementsByClassName("casilla")[0]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = torreNegra.figura
+                square = document.getElementsByClassName("square")[0]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = blackTower.figure
+                piece.dataset.player = "black"
+                piece.dataset.chessPiece = "tower"
                 
-                casilla = document.getElementsByClassName("casilla")[7]
-                pieza = document.createElement("p")
-                casilla.appendChild(pieza)
-                pieza.classList.add("piezas")
-                pieza.innerHTML = torreNegra.figura
+                square = document.getElementsByClassName("square")[7]
+                piece = document.createElement("p")
+                square.appendChild(piece)
+                piece.classList.add("pieces")
+                piece.innerHTML = blackTower.figure
+                piece.dataset.player = "black"
+                piece.dataset.chessPiece = "tower"
 
                 break
         }
     }
 }
 
-rellenarTableroInicial()
+fillInitialBoard()
 
-let piezaSeleccionada = null;
-let casillaOrigen = null;
-
-document.querySelectorAll('.casilla').forEach(casilla => {
-    casilla.addEventListener('click', () => {
-        if (piezaSeleccionada) {
-            moverPieza(casilla)
-        } else if (casilla.querySelector('.piezas')) {
-            seleccionarPieza(casilla)
-        }
-    });
-});
-
-function seleccionarPieza(casilla) {
-    piezaSeleccionada = casilla.querySelector('.piezas')
-    casillaOrigen = casilla
-    casilla.dataset.originalColor = casilla.style.backgroundColor; // Guardar el color original
-    casilla.style.backgroundColor = 'yellow'
+// Function for getting the chess piece of the square
+const getChessPiece = (square) => {
+    switch (square.querySelector('.pieces').dataset.chessPiece) {
+        case "pawn":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whitePawn
+            }else {
+                return blackPawn
+            }
+        case "king":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteKing
+            }else {
+                return blackKing
+            }
+        case "queen":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteQueen
+            }else {
+                return blackQueen
+            }
+        case "knight":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteKnight
+            }else {
+                return blackKnight
+            }
+        case "bishop":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteBishop
+            }else {
+                return blackBishop
+            }
+        case "tower":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteTower
+            }else {
+                return blackTower
+            }
+    }
 }
 
-function moverPieza(casilla) {
-    if (casilla !== casillaOrigen && (!casilla.querySelector('.piezas') || casilla.querySelector('.piezas').dataset.color !== piezaSeleccionada.dataset.color)) {
-        casilla.appendChild(piezaSeleccionada)
-        casillaOrigen.style.backgroundColor = casillaOrigen.dataset.originalColor; // Restaurar el color original
-        piezaSeleccionada = null
-        casillaOrigen = null
+let pieceSelected = null
+let squareOrigin = null
+
+document.querySelectorAll('.square').forEach((square, index) => {
+    square.addEventListener('click', () => {
+        if (pieceSelected) {
+            movePiece(square)
+        } else if (square.querySelector('.pieces')) {
+            selectPiece(square)
+            console.log(pieceSelected.dataset.player)
+            console.log(pieceSelected.dataset.chessPiece)
+        }
+    })
+})
+
+function selectPiece(square) {
+    pieceSelected = square.querySelector('.pieces')
+    squareOrigin = square
+    square.dataset.originalColor = square.style.backgroundColor; // Save the original color
+    square.style.backgroundColor = 'yellow'
+}
+
+function movePiece(square) {
+
+    if (square !== squareOrigin) {
+        console.log(getChessPiece(squareOrigin))
+        if(getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
+            console.log("Movimiento legal")
+            if(!square.querySelector('.pieces')) {
+                square.appendChild(pieceSelected)
+            }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
+                square.querySelector('.pieces').remove()
+                square.appendChild(pieceSelected)
+            }
+        }
+        squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
+        pieceSelected = null
+        squareOrigin = null
     }
 }
