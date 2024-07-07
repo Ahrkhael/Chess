@@ -1,7 +1,6 @@
+// At the beginning, we must create the board
 const board = document.getElementById("board")
-
 let square = null
-
 for(let i=0; i<8; i++) {
 
     const row = document.createElement("div")
@@ -28,6 +27,7 @@ for(let i=0; i<8; i++) {
     }
 }
 
+// Create a class for every chess piece
 class King {
     constructor(player) {
         this.player = player
@@ -132,6 +132,7 @@ const blackBishop = new Bishop("black")
 const whiteTower = new Tower("white")
 const blackTower = new Tower("black")
 
+// Function to fill the initial board
 const fillInitialBoard = () => {
 
     for (let i=0; i<8; i++) {
@@ -139,20 +140,22 @@ const fillInitialBoard = () => {
         square = document.getElementsByClassName("square")[i+8]
         let piece = document.createElement("p")
         square.appendChild(piece)
-        piece.dataset.player = "black"
 
         piece.classList.add("pieces")
 
         piece.innerHTML = blackPawn.figure
+        piece.dataset.player = "black"
+        piece.dataset.chessPiece = "pawn"
 
         square = document.getElementsByClassName("square")[i+48]
         piece = document.createElement("p")
         square.appendChild(piece)
-        piece.dataset.player = "white"
 
         piece.classList.add("pieces")
 
         piece.innerHTML = whitePawn.figure
+        piece.dataset.player = "white"
+        piece.dataset.chessPiece = "pawn"
         
         switch (i) {
             case 4:
@@ -163,6 +166,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteKing.figure
                 piece.dataset.player = "white"
+                piece.dataset.chessPiece = "king"
     
                 square = document.getElementsByClassName("square")[4]
                 piece = document.createElement("p")
@@ -170,6 +174,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = blackKing.figure
                 piece.dataset.player = "black"
+                piece.dataset.chessPiece = "king"
 
                 break
             
@@ -181,6 +186,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteQueen.figure
                 piece.dataset.player = "white"
+                piece.dataset.chessPiece = "queen"
                 
                 square = document.getElementsByClassName("square")[3]
                 piece = document.createElement("p")
@@ -188,6 +194,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = blackQueen.figure
                 piece.dataset.player = "black"
+                piece.dataset.chessPiece = "queen"
 
                 break    
             
@@ -199,6 +206,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteBishop.figure
                 piece.dataset.player = "white"
+                piece.dataset.chessPiece = "bishop"
 
                 square = document.getElementsByClassName("square")[61]
                 piece = document.createElement("p")
@@ -206,6 +214,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteBishop.figure
                 piece.dataset.player = "white"
+                piece.dataset.chessPiece = "bishop"
 
                 square = document.getElementsByClassName("square")[2]
                 piece = document.createElement("p")
@@ -213,6 +222,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = blackBishop.figure
                 piece.dataset.player = "black"
+                piece.dataset.chessPiece = "bishop"
 
                 square = document.getElementsByClassName("square")[5]
                 piece = document.createElement("p")
@@ -220,6 +230,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = blackBishop.figure
                 piece.dataset.player = "black"
+                piece.dataset.chessPiece = "bishop"
 
                 break
 
@@ -231,6 +242,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteKnight.figure
                 piece.dataset.player = "white"
+                piece.dataset.chessPiece = "knight"
 
                 square = document.getElementsByClassName("square")[62]
                 piece = document.createElement("p")
@@ -238,6 +250,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteKnight.figure
                 piece.dataset.player = "white"
+                piece.dataset.chessPiece = "knight"
 
                 square = document.getElementsByClassName("square")[1]
                 piece = document.createElement("p")
@@ -245,6 +258,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = blackKnight.figure
                 piece.dataset.player = "black"
+                piece.dataset.chessPiece = "knight"
 
                 square = document.getElementsByClassName("square")[6]
                 piece = document.createElement("p")
@@ -252,6 +266,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = blackKnight.figure
                 piece.dataset.player = "black"
+                piece.dataset.chessPiece = "knight"
 
                 break  
             
@@ -263,6 +278,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteTower.figure
                 piece.dataset.player = "white"
+                piece.dataset.chessPiece = "tower"
                 
                 square = document.getElementsByClassName("square")[63]
                 piece = document.createElement("p")
@@ -270,6 +286,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteTower.figure
                 piece.dataset.player = "white"
+                piece.dataset.chessPiece = "tower"
 
                 square = document.getElementsByClassName("square")[0]
                 piece = document.createElement("p")
@@ -277,6 +294,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = blackTower.figure
                 piece.dataset.player = "black"
+                piece.dataset.chessPiece = "tower"
                 
                 square = document.getElementsByClassName("square")[7]
                 piece = document.createElement("p")
@@ -284,6 +302,7 @@ const fillInitialBoard = () => {
                 piece.classList.add("pieces")
                 piece.innerHTML = blackTower.figure
                 piece.dataset.player = "black"
+                piece.dataset.chessPiece = "tower"
 
                 break
         }
@@ -292,20 +311,62 @@ const fillInitialBoard = () => {
 
 fillInitialBoard()
 
+// Function for getting the chess piece of the square
+const getChessPiece = (square) => {
+    switch (square.querySelector('.pieces').dataset.chessPiece) {
+        case "pawn":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whitePawn
+            }else {
+                return blackPawn
+            }
+        case "king":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteKing
+            }else {
+                return blackKing
+            }
+        case "queen":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteQueen
+            }else {
+                return blackQueen
+            }
+        case "knight":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteKnight
+            }else {
+                return blackKnight
+            }
+        case "bishop":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteBishop
+            }else {
+                return blackBishop
+            }
+        case "tower":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteTower
+            }else {
+                return blackTower
+            }
+    }
+}
+
 let pieceSelected = null
 let squareOrigin = null
 
 document.querySelectorAll('.square').forEach((square, index) => {
     square.addEventListener('click', () => {
         if (pieceSelected) {
-            console.log(pieceSelected.dataset.player)
-            movePiece(square)
+            movePiece(square, index)
         } else if (square.querySelector('.pieces')) {
-            console.log(square.querySelector('.pieces').innerHTML)
             selectPiece(square)
+            console.log(pieceSelected.dataset.player)
+            console.log(pieceSelected.dataset.chessPiece)
         }
-    });
-});
+    })
+})
 
 function selectPiece(square) {
     pieceSelected = square.querySelector('.pieces')
@@ -314,11 +375,16 @@ function selectPiece(square) {
     square.style.backgroundColor = 'yellow'
 }
 
-function movePiece(square) {
+function movePiece(square, index) {
 
-    if (square !== squareOrigin && (!square.querySelector('.pieces') || square.querySelector('.pieces').dataset.color !== pieceSelected.dataset.color)) {
-        
-        square.appendChild(pieceSelected)
+    if (square !== squareOrigin) {
+        console.log(getChessPiece(squareOrigin))
+        if(!square.querySelector('.pieces')) {
+            square.appendChild(pieceSelected)
+        }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
+            square.querySelector('.pieces').remove()
+            square.appendChild(pieceSelected)
+        }
         squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restaurar el color original
         pieceSelected = null
         squareOrigin = null
