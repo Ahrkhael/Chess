@@ -1,5 +1,7 @@
 const board = document.getElementById("board")
 
+let square = null
+
 for(let i=0; i<8; i++) {
 
     const row = document.createElement("div")
@@ -8,7 +10,7 @@ for(let i=0; i<8; i++) {
 
     for (let j=0; j<8; j++) {
 
-        const square = document.createElement("div")
+        square = document.createElement("div")
         square.classList.add("square")
 
         if ((i+j)%2===0) {
@@ -134,9 +136,10 @@ const fillInitialBoard = () => {
 
     for (let i=0; i<8; i++) {
         
-        let square = document.getElementsByClassName("square")[i+8]
+        square = document.getElementsByClassName("square")[i+8]
         let piece = document.createElement("p")
         square.appendChild(piece)
+        piece.dataset.player = "black"
 
         piece.classList.add("pieces")
 
@@ -145,6 +148,7 @@ const fillInitialBoard = () => {
         square = document.getElementsByClassName("square")[i+48]
         piece = document.createElement("p")
         square.appendChild(piece)
+        piece.dataset.player = "white"
 
         piece.classList.add("pieces")
 
@@ -158,12 +162,14 @@ const fillInitialBoard = () => {
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteKing.figure
+                piece.dataset.player = "white"
     
                 square = document.getElementsByClassName("square")[4]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = blackKing.figure
+                piece.dataset.player = "black"
 
                 break
             
@@ -174,12 +180,14 @@ const fillInitialBoard = () => {
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteQueen.figure
+                piece.dataset.player = "white"
                 
                 square = document.getElementsByClassName("square")[3]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = blackQueen.figure
+                piece.dataset.player = "black"
 
                 break    
             
@@ -190,24 +198,28 @@ const fillInitialBoard = () => {
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteBishop.figure
+                piece.dataset.player = "white"
 
                 square = document.getElementsByClassName("square")[61]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteBishop.figure
+                piece.dataset.player = "white"
 
                 square = document.getElementsByClassName("square")[2]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = blackBishop.figure
+                piece.dataset.player = "black"
 
                 square = document.getElementsByClassName("square")[5]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = blackBishop.figure
+                piece.dataset.player = "black"
 
                 break
 
@@ -218,24 +230,28 @@ const fillInitialBoard = () => {
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteKnight.figure
+                piece.dataset.player = "white"
 
                 square = document.getElementsByClassName("square")[62]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteKnight.figure
+                piece.dataset.player = "white"
 
                 square = document.getElementsByClassName("square")[1]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = blackKnight.figure
+                piece.dataset.player = "black"
 
                 square = document.getElementsByClassName("square")[6]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = blackKnight.figure
+                piece.dataset.player = "black"
 
                 break  
             
@@ -246,24 +262,28 @@ const fillInitialBoard = () => {
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteTower.figure
+                piece.dataset.player = "white"
                 
                 square = document.getElementsByClassName("square")[63]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = whiteTower.figure
+                piece.dataset.player = "white"
 
                 square = document.getElementsByClassName("square")[0]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = blackTower.figure
+                piece.dataset.player = "black"
                 
                 square = document.getElementsByClassName("square")[7]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
                 piece.innerHTML = blackTower.figure
+                piece.dataset.player = "black"
 
                 break
         }
@@ -272,12 +292,13 @@ const fillInitialBoard = () => {
 
 fillInitialBoard()
 
-let pieceSelected = null;
-let squareOrigin = null;
+let pieceSelected = null
+let squareOrigin = null
 
-document.querySelectorAll('.square').forEach(square => {
+document.querySelectorAll('.square').forEach((square, index) => {
     square.addEventListener('click', () => {
         if (pieceSelected) {
+            console.log(pieceSelected.dataset.player)
             movePiece(square)
         } else if (square.querySelector('.pieces')) {
             console.log(square.querySelector('.pieces').innerHTML)
