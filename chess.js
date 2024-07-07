@@ -19,6 +19,8 @@ for(let i=0; i<8; i++) {
         }
 
         row.appendChild(square)
+        square.dataset.row = 8-i //The first row will be the bottom one
+        square.dataset.column = j+1
 
         if(j===7) {
             const br = document.createElement("br")
@@ -69,6 +71,25 @@ class Pawn {
             throw new Error("Player must be white or black")
         }
     }
+    isLegalMove(square, squareOrigin) {
+        if(this.player === "white") {
+            if(squareOrigin.dataset.column === square.dataset.column) {
+                if(square.dataset.row == Number(squareOrigin.dataset.row) + 1 && !square.querySelector('.pieces')) {
+                    return true
+                }else if (squareOrigin.dataset.row == 2 && square.dataset.row == 4) {
+                    return true
+                }
+            }
+        }else if(this.player === "black") {
+            if(squareOrigin.dataset.column === square.dataset.column) {
+                if(square.dataset.row == Number(squareOrigin.dataset.row) - 1 && !square.querySelector('.pieces')) {
+                    return true
+                }else if (squareOrigin.dataset.row == 7 && square.dataset.row == 5) {
+                    return true
+                }
+            }
+        }
+    }
 }
 
 class Knight {
@@ -95,6 +116,31 @@ class Bishop {
             this.figure="\u{265D}"
         }else {
             throw new Error("Player must be white or black")
+        }
+    }
+    isLegalMove(square, squareOrigin) {
+        for(let i=1; i<8; i++) {
+            if(
+                square.dataset.row == Number(squareOrigin.dataset.row) + i * 1 && 
+                square.dataset.column == Number(squareOrigin.dataset.column) + i * 1
+            ) {
+                return true
+            }else if(
+                square.dataset.row == Number(squareOrigin.dataset.row) - i * 1 && 
+                square.dataset.column == Number(squareOrigin.dataset.column) + i * 1
+            ) {
+                return true
+            }else if(
+                square.dataset.row == Number(squareOrigin.dataset.row) + i * 1 && 
+                square.dataset.column == Number(squareOrigin.dataset.column) - i * 1
+            ) {
+                return true
+            }else if(
+                square.dataset.row == Number(squareOrigin.dataset.row) - i * 1 && 
+                square.dataset.column == Number(squareOrigin.dataset.column) - i * 1
+            ) {
+                return true
+            }
         }
     }
 }
@@ -359,7 +405,7 @@ let squareOrigin = null
 document.querySelectorAll('.square').forEach((square, index) => {
     square.addEventListener('click', () => {
         if (pieceSelected) {
-            movePiece(square, index)
+            movePiece(square)
         } else if (square.querySelector('.pieces')) {
             selectPiece(square)
             console.log(pieceSelected.dataset.player)
@@ -371,21 +417,24 @@ document.querySelectorAll('.square').forEach((square, index) => {
 function selectPiece(square) {
     pieceSelected = square.querySelector('.pieces')
     squareOrigin = square
-    square.dataset.originalColor = square.style.backgroundColor; // Guardar el color original
+    square.dataset.originalColor = square.style.backgroundColor; // Save the original color
     square.style.backgroundColor = 'yellow'
 }
 
-function movePiece(square, index) {
+function movePiece(square) {
 
     if (square !== squareOrigin) {
         console.log(getChessPiece(squareOrigin))
-        if(!square.querySelector('.pieces')) {
-            square.appendChild(pieceSelected)
-        }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
-            square.querySelector('.pieces').remove()
-            square.appendChild(pieceSelected)
+        if(getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
+            console.log("Movimiento legal")
+            if(!square.querySelector('.pieces')) {
+                square.appendChild(pieceSelected)
+            }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
+                square.querySelector('.pieces').remove()
+                square.appendChild(pieceSelected)
+            }
         }
-        squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restaurar el color original
+        squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
         pieceSelected = null
         squareOrigin = null
     }
