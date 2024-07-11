@@ -74,18 +74,26 @@ class Pawn {
     isLegalMove(square, squareOrigin) {
         if(this.player === "white") {
             if(squareOrigin.dataset.column === square.dataset.column) {
-                if(square.dataset.row == Number(squareOrigin.dataset.row) + 1 && !square.querySelector('.pieces')) {
-                    return true
-                }else if (squareOrigin.dataset.row == 2 && square.dataset.row == 4) {
-                    return true
+                if(!square.querySelector('.pieces')) {
+                    if(square.dataset.row == Number(squareOrigin.dataset.row) + 1 && !square.querySelector('.pieces')) {
+                        return true
+                    }else if (squareOrigin.dataset.row == 2 && square.dataset.row == 4) {
+                        if(!document.getElementsByClassName('square')[Number(square.dataset.column)+39].querySelector('.pieces')) {
+                            return true
+                        }
+                    }
                 }
             }
         }else if(this.player === "black") {
             if(squareOrigin.dataset.column === square.dataset.column) {
-                if(square.dataset.row == Number(squareOrigin.dataset.row) - 1 && !square.querySelector('.pieces')) {
-                    return true
-                }else if (squareOrigin.dataset.row == 7 && square.dataset.row == 5) {
-                    return true
+                if(!square.querySelector('.pieces')) {
+                    if(square.dataset.row == Number(squareOrigin.dataset.row) - 1) {
+                        return true
+                    }else if (squareOrigin.dataset.row == 7 && square.dataset.row == 5) {
+                        if(!document.getElementsByClassName('square')[Number(square.dataset.column)+15].querySelector('.pieces')) {
+                            return true
+                        }
+                    }
                 }
             }
         }
@@ -102,6 +110,25 @@ class Knight {
             this.figure="\u{265E}"
         }else {
             throw new Error("Player must be white or black")
+        }
+    }
+    isLegalMove(square, squareOrigin) {
+        if(square.dataset.row == Number(squareOrigin.dataset.row) + 2 && square.dataset.column == Number(squareOrigin.dataset.column) - 1) {
+            return true
+        }else if(square.dataset.row == Number(squareOrigin.dataset.row) + 2 && square.dataset.column == Number(squareOrigin.dataset.column) + 1) {
+            return true
+        }else if(square.dataset.row == Number(squareOrigin.dataset.row) + 1 && square.dataset.column == Number(squareOrigin.dataset.column) - 2) {
+            return true
+        }else if(square.dataset.row == Number(squareOrigin.dataset.row) + 1 && square.dataset.column == Number(squareOrigin.dataset.column) + 2) {
+            return true
+        }else if(square.dataset.row == Number(squareOrigin.dataset.row) - 2 && square.dataset.column == Number(squareOrigin.dataset.column) - 1) {
+            return true
+        }else if(square.dataset.row == Number(squareOrigin.dataset.row) - 2 && square.dataset.column == Number(squareOrigin.dataset.column) + 1) {
+            return true
+        }else if(square.dataset.row == Number(squareOrigin.dataset.row) - 1 && square.dataset.column == Number(squareOrigin.dataset.column) - 2) {
+            return true
+        }else if(square.dataset.row == Number(squareOrigin.dataset.row) - 1 && square.dataset.column == Number(squareOrigin.dataset.column) + 2) {
+            return true
         }
     }
 }
