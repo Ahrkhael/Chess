@@ -146,28 +146,36 @@ class Bishop {
         }
     }
     isLegalMove(square, squareOrigin) {
-        for(let i=1; i<8; i++) {
-            if(
-                square.dataset.row == Number(squareOrigin.dataset.row) + i * 1 && 
-                square.dataset.column == Number(squareOrigin.dataset.column) + i * 1
-            ) {
-                return true
-            }else if(
-                square.dataset.row == Number(squareOrigin.dataset.row) - i * 1 && 
-                square.dataset.column == Number(squareOrigin.dataset.column) + i * 1
-            ) {
-                return true
-            }else if(
-                square.dataset.row == Number(squareOrigin.dataset.row) + i * 1 && 
-                square.dataset.column == Number(squareOrigin.dataset.column) - i * 1
-            ) {
-                return true
-            }else if(
-                square.dataset.row == Number(squareOrigin.dataset.row) - i * 1 && 
-                square.dataset.column == Number(squareOrigin.dataset.column) - i * 1
-            ) {
-                return true
+        let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+        let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+        let squareOriginNumber = Number(squareOrigin.dataset.column) - 1 + 8*(8 - Number(squareOrigin.dataset.row))
+        if(Math.abs(diffX) === Math.abs(diffY)) {
+            if(diffX < 0 && diffY < 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 9*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0 && diffY < 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 7*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX < 0 && diffY > 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 7*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0 && diffY > 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 9*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
             }
+            return true
         }
     }
 }
