@@ -95,13 +95,15 @@ class Pawn {
                 }
             }
         }else if(squareOrigin.dataset.column == Number(square.dataset.column) + 1 || squareOrigin.dataset.column == Number(square.dataset.column) - 1) {
-            if(this.player === "white") {
-                if(square.querySelector('.pieces').dataset.player === "black" && square.dataset.row == Number(squareOrigin.dataset.row) + 1) {
-                    return true
-                }
-            }else if(this.player === "black") {
-                if(square.querySelector('.pieces').dataset.player === "white" && square.dataset.row == Number(squareOrigin.dataset.row) - 1) {
-                    return true
+            if(square.querySelector('.pieces')) {
+                if(this.player === "white") {
+                    if(square.querySelector('.pieces').dataset.player === "black" && square.dataset.row == Number(squareOrigin.dataset.row) + 1) {
+                        return true
+                    }
+                }else if(this.player === "black") {
+                    if(square.querySelector('.pieces').dataset.player === "white" && square.dataset.row == Number(squareOrigin.dataset.row) - 1) {
+                        return true
+                    }
                 }
             }
         }
@@ -442,7 +444,7 @@ fillInitialBoard()
 
 // Function for getting the chess piece of the square
 const getChessPiece = (square) => {
-    switch (square.querySelector('.pieces').dataset.chessPiece) {
+    switch (pieceSelected.dataset.chessPiece) {
         case "pawn":
             if (square.querySelector('.pieces').dataset.player === "white") {
                 return whitePawn
