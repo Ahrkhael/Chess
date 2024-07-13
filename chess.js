@@ -72,10 +72,10 @@ class Pawn {
         }
     }
     isLegalMove(square, squareOrigin) {
-        if(this.player === "white") {
-            if(squareOrigin.dataset.column === square.dataset.column) {
+        if(squareOrigin.dataset.column === square.dataset.column) {
+            if(this.player === "white") {
                 if(!square.querySelector('.pieces')) {
-                    if(square.dataset.row == Number(squareOrigin.dataset.row) + 1 && !square.querySelector('.pieces')) {
+                    if(square.dataset.row == Number(squareOrigin.dataset.row) + 1) {
                         return true
                     }else if (squareOrigin.dataset.row == 2 && square.dataset.row == 4) {
                         if(!document.getElementsByClassName('square')[Number(square.dataset.column)+39].querySelector('.pieces')) {
@@ -83,9 +83,7 @@ class Pawn {
                         }
                     }
                 }
-            }
-        }else if(this.player === "black") {
-            if(squareOrigin.dataset.column === square.dataset.column) {
+            }else if(this.player === "black") {
                 if(!square.querySelector('.pieces')) {
                     if(square.dataset.row == Number(squareOrigin.dataset.row) - 1) {
                         return true
@@ -94,6 +92,16 @@ class Pawn {
                             return true
                         }
                     }
+                }
+            }
+        }else if(squareOrigin.dataset.column == Number(square.dataset.column) + 1 || squareOrigin.dataset.column == Number(square.dataset.column) - 1) {
+            if(this.player === "white") {
+                if(square.querySelector('.pieces').dataset.player === "black" && square.dataset.row == Number(squareOrigin.dataset.row) + 1) {
+                    return true
+                }
+            }else if(this.player === "black") {
+                if(square.querySelector('.pieces').dataset.player === "white" && square.dataset.row == Number(squareOrigin.dataset.row) - 1) {
+                    return true
                 }
             }
         }
