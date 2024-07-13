@@ -146,28 +146,36 @@ class Bishop {
         }
     }
     isLegalMove(square, squareOrigin) {
-        for(let i=1; i<8; i++) {
-            if(
-                square.dataset.row == Number(squareOrigin.dataset.row) + i * 1 && 
-                square.dataset.column == Number(squareOrigin.dataset.column) + i * 1
-            ) {
-                return true
-            }else if(
-                square.dataset.row == Number(squareOrigin.dataset.row) - i * 1 && 
-                square.dataset.column == Number(squareOrigin.dataset.column) + i * 1
-            ) {
-                return true
-            }else if(
-                square.dataset.row == Number(squareOrigin.dataset.row) + i * 1 && 
-                square.dataset.column == Number(squareOrigin.dataset.column) - i * 1
-            ) {
-                return true
-            }else if(
-                square.dataset.row == Number(squareOrigin.dataset.row) - i * 1 && 
-                square.dataset.column == Number(squareOrigin.dataset.column) - i * 1
-            ) {
-                return true
+        let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+        let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+        let squareOriginNumber = Number(squareOrigin.dataset.column) - 1 + 8*(8 - Number(squareOrigin.dataset.row))
+        if(Math.abs(diffX) === Math.abs(diffY)) {
+            if(diffX < 0 && diffY < 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 9*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0 && diffY < 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 7*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX < 0 && diffY > 0) {
+                for(let i=1; i<diffY; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 7*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0 && diffY > 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 9*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
             }
+            return true
         }
     }
 }
@@ -183,6 +191,44 @@ class Tower {
             this.figure="\u{265C}"
         }else {
             throw new Error("Player must be white or black")
+        }
+    }
+    isLegalMove(square, squareOrigin) {
+        let squareOriginNumber = Number(squareOrigin.dataset.column) - 1 + 8*(8 - Number(squareOrigin.dataset.row))
+        if(square.dataset.row === squareOrigin.dataset.row) {
+            let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+            if(diffX < 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }
+            this.hasMoved = true
+            return true
+        } else if(square.dataset.column === squareOrigin.dataset.column) {
+            let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+            if(diffY < 0) {
+                for(let i=1; i<Math.abs(diffY); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 8 * i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffY > 0) {
+                for(let i=1; i<diffY; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 8 * i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }
+            this.hasMoved = true
+            return true
         }
     }
 }
@@ -202,8 +248,10 @@ const blackKnight = new Knight("black")
 const whiteBishop = new Bishop("white")
 const blackBishop = new Bishop("black")
 
-const whiteTower = new Tower("white")
-const blackTower = new Tower("black")
+const whiteTower1 = new Tower("white")
+const whiteTower2 = new Tower("white")
+const blackTower1 = new Tower("black")
+const blackTower2 = new Tower("black")
 
 // Function to fill the initial board
 const fillInitialBoard = () => {
@@ -349,33 +397,33 @@ const fillInitialBoard = () => {
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
-                piece.innerHTML = whiteTower.figure
+                piece.innerHTML = whiteTower1.figure
                 piece.dataset.player = "white"
-                piece.dataset.chessPiece = "tower"
+                piece.dataset.chessPiece = "tower1"
                 
                 square = document.getElementsByClassName("square")[63]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
-                piece.innerHTML = whiteTower.figure
+                piece.innerHTML = whiteTower2.figure
                 piece.dataset.player = "white"
-                piece.dataset.chessPiece = "tower"
+                piece.dataset.chessPiece = "tower2"
 
                 square = document.getElementsByClassName("square")[0]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
-                piece.innerHTML = blackTower.figure
+                piece.innerHTML = blackTower1.figure
                 piece.dataset.player = "black"
-                piece.dataset.chessPiece = "tower"
+                piece.dataset.chessPiece = "tower1"
                 
                 square = document.getElementsByClassName("square")[7]
                 piece = document.createElement("p")
                 square.appendChild(piece)
                 piece.classList.add("pieces")
-                piece.innerHTML = blackTower.figure
+                piece.innerHTML = blackTower2.figure
                 piece.dataset.player = "black"
-                piece.dataset.chessPiece = "tower"
+                piece.dataset.chessPiece = "tower2"
 
                 break
         }
@@ -417,11 +465,18 @@ const getChessPiece = (square) => {
             }else {
                 return blackBishop
             }
-        case "tower":
+        case "tower1":
             if (square.querySelector('.pieces').dataset.player === "white") {
-                return whiteTower
+                console.log(whiteTower1.hasMoved)
+                return whiteTower1
             }else {
-                return blackTower
+                return blackTower1
+            }
+        case "tower2":
+            if (square.querySelector('.pieces').dataset.player === "white") {
+                return whiteTower2
+            }else {
+                return blackTower2
             }
     }
 }
@@ -451,9 +506,7 @@ function selectPiece(square) {
 function movePiece(square) {
 
     if (square !== squareOrigin) {
-        console.log(getChessPiece(squareOrigin))
         if(getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
-            console.log("Movimiento legal")
             if(!square.querySelector('.pieces')) {
                 square.appendChild(pieceSelected)
             }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
