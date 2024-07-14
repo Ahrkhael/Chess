@@ -43,6 +43,24 @@ class King {
             throw new Error("Player must be white or black")
         }
     }
+    isLegalMove(square, squareOrigin) {
+        let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+        let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+        if(square.dataset.row === squareOrigin.dataset.row) {
+            if(diffX === -1 || diffX === 1) {
+                this.hasMoved = true
+                return true
+            }
+        }else if(square.dataset.column === squareOrigin.dataset.column) {
+            if(diffY === -1 || diffY === 1) {
+                this.hasMoved = true
+                return true
+            }
+        }else if(Math.abs(diffX) === Math.abs(diffY) && Math.abs(diffX) === 1) {
+            this.hasMoved = true
+            return true
+        }
+    }
 }
 
 class Queen {
@@ -55,6 +73,74 @@ class Queen {
             this.figure="\u{265B}"
         }else {
             throw new Error("Player must be white or black")
+        }
+    }
+    isLegalMove(square, squareOrigin) {
+        let squareOriginNumber = Number(squareOrigin.dataset.column) - 1 + 8*(8 - Number(squareOrigin.dataset.row))
+        // Check if it's moving verically or horizontally
+        if(square.dataset.row === squareOrigin.dataset.row) {
+            let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+            if(diffX < 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }else if(square.dataset.column === squareOrigin.dataset.column) {
+            let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+            if(diffY < 0) {
+                for(let i=1; i<Math.abs(diffY); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 8 * i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffY > 0) {
+                for(let i=1; i<diffY; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 8 * i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+        // Check if it's moving in diagonal
+        let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+        let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+        if(Math.abs(diffX) === Math.abs(diffY)) {
+            if(diffX < 0 && diffY < 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 9*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0 && diffY < 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 7*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX < 0 && diffY > 0) {
+                for(let i=1; i<diffY; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 7*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0 && diffY > 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 9*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }
+            return true
         }
     }
 }
@@ -222,7 +308,7 @@ class Tower {
             }
             this.hasMoved = true
             return true
-        } else if(square.dataset.column === squareOrigin.dataset.column) {
+        }else if(square.dataset.column === squareOrigin.dataset.column) {
             let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
             if(diffY < 0) {
                 for(let i=1; i<Math.abs(diffY); i++) {
