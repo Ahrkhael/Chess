@@ -43,6 +43,24 @@ class King {
             throw new Error("Player must be white or black")
         }
     }
+    isLegalMove(square, squareOrigin) {
+        let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+        let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+        if(square.dataset.row === squareOrigin.dataset.row) {
+            if(diffX === -1 || diffX === 1) {
+                this.hasMoved = true
+                return true
+            }
+        }else if(square.dataset.column === squareOrigin.dataset.column) {
+            if(diffY === -1 || diffY === 1) {
+                this.hasMoved = true
+                return true
+            }
+        }else if(Math.abs(diffX) === Math.abs(diffY) && Math.abs(diffX) === 1) {
+            this.hasMoved = true
+            return true
+        }
+    }
 }
 
 class Queen {
@@ -55,6 +73,74 @@ class Queen {
             this.figure="\u{265B}"
         }else {
             throw new Error("Player must be white or black")
+        }
+    }
+    isLegalMove(square, squareOrigin) {
+        let squareOriginNumber = Number(squareOrigin.dataset.column) - 1 + 8*(8 - Number(squareOrigin.dataset.row))
+        // Check if it's moving verically or horizontally
+        if(square.dataset.row === squareOrigin.dataset.row) {
+            let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+            if(diffX < 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }else if(square.dataset.column === squareOrigin.dataset.column) {
+            let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+            if(diffY < 0) {
+                for(let i=1; i<Math.abs(diffY); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 8 * i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffY > 0) {
+                for(let i=1; i<diffY; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 8 * i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+        // Check if it's moving in diagonal
+        let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+        let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
+        if(Math.abs(diffX) === Math.abs(diffY)) {
+            if(diffX < 0 && diffY < 0) {
+                for(let i=1; i<Math.abs(diffX); i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 9*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0 && diffY < 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber - 7*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX < 0 && diffY > 0) {
+                for(let i=1; i<diffY; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 7*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }else if(diffX > 0 && diffY > 0) {
+                for(let i=1; i<diffX; i++) {
+                    if(document.getElementsByClassName('square')[squareOriginNumber + 9*i].querySelector('.pieces')) {
+                        return false
+                    }
+                }
+            }
+            return true
         }
     }
 }
@@ -72,10 +158,10 @@ class Pawn {
         }
     }
     isLegalMove(square, squareOrigin) {
-        if(this.player === "white") {
-            if(squareOrigin.dataset.column === square.dataset.column) {
+        if(squareOrigin.dataset.column === square.dataset.column) {
+            if(this.player === "white") {
                 if(!square.querySelector('.pieces')) {
-                    if(square.dataset.row == Number(squareOrigin.dataset.row) + 1 && !square.querySelector('.pieces')) {
+                    if(square.dataset.row == Number(squareOrigin.dataset.row) + 1) {
                         return true
                     }else if (squareOrigin.dataset.row == 2 && square.dataset.row == 4) {
                         if(!document.getElementsByClassName('square')[Number(square.dataset.column)+39].querySelector('.pieces')) {
@@ -83,9 +169,7 @@ class Pawn {
                         }
                     }
                 }
-            }
-        }else if(this.player === "black") {
-            if(squareOrigin.dataset.column === square.dataset.column) {
+            }else if(this.player === "black") {
                 if(!square.querySelector('.pieces')) {
                     if(square.dataset.row == Number(squareOrigin.dataset.row) - 1) {
                         return true
@@ -93,6 +177,18 @@ class Pawn {
                         if(!document.getElementsByClassName('square')[Number(square.dataset.column)+15].querySelector('.pieces')) {
                             return true
                         }
+                    }
+                }
+            }
+        }else if(squareOrigin.dataset.column == Number(square.dataset.column) + 1 || squareOrigin.dataset.column == Number(square.dataset.column) - 1) {
+            if(square.querySelector('.pieces')) {
+                if(this.player === "white") {
+                    if(square.querySelector('.pieces').dataset.player === "black" && square.dataset.row == Number(squareOrigin.dataset.row) + 1) {
+                        return true
+                    }
+                }else if(this.player === "black") {
+                    if(square.querySelector('.pieces').dataset.player === "white" && square.dataset.row == Number(squareOrigin.dataset.row) - 1) {
+                        return true
                     }
                 }
             }
@@ -212,7 +308,7 @@ class Tower {
             }
             this.hasMoved = true
             return true
-        } else if(square.dataset.column === squareOrigin.dataset.column) {
+        }else if(square.dataset.column === squareOrigin.dataset.column) {
             let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
             if(diffY < 0) {
                 for(let i=1; i<Math.abs(diffY); i++) {
@@ -434,7 +530,7 @@ fillInitialBoard()
 
 // Function for getting the chess piece of the square
 const getChessPiece = (square) => {
-    switch (square.querySelector('.pieces').dataset.chessPiece) {
+    switch (pieceSelected.dataset.chessPiece) {
         case "pawn":
             if (square.querySelector('.pieces').dataset.player === "white") {
                 return whitePawn
