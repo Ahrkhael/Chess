@@ -528,6 +528,16 @@ const fillInitialBoard = () => {
 
 fillInitialBoard()
 
+let playerActive = "white"
+
+function changeTurn() {
+    if(playerActive === "white") {
+        playerActive = "black"
+    }else if(playerActive === "black") {
+        playerActive = "white"
+    }
+}
+
 // Function for getting the chess piece of the square
 const getChessPiece = (square) => {
     switch (pieceSelected.dataset.chessPiece) {
@@ -580,16 +590,17 @@ const getChessPiece = (square) => {
 let pieceSelected = null
 let squareOrigin = null
 
-document.querySelectorAll('.square').forEach((square, index) => {
+
+document.querySelectorAll('.square').forEach((square) => {
     square.addEventListener('click', () => {
         if (pieceSelected) {
             movePiece(square)
-        } else if (square.querySelector('.pieces')) {
+            changeTurn()
+        } else if (square.querySelector('.pieces') && square.querySelector('.pieces').dataset.player === playerActive) {
             selectPiece(square)
-            console.log(pieceSelected.dataset.player)
-            console.log(pieceSelected.dataset.chessPiece)
         }
     })
+
 })
 
 function selectPiece(square) {
