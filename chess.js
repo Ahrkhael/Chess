@@ -595,7 +595,6 @@ document.querySelectorAll('.square').forEach((square) => {
     square.addEventListener('click', () => {
         if (pieceSelected) {
             movePiece(square)
-            changeTurn()
         } else if (square.querySelector('.pieces') && square.querySelector('.pieces').dataset.player === playerActive) {
             selectPiece(square)
         }
@@ -620,6 +619,7 @@ function movePiece(square) {
                 square.querySelector('.pieces').remove()
                 square.appendChild(pieceSelected)
             }
+            changeTurn()
         }
         squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
         pieceSelected = null
