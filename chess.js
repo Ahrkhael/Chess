@@ -349,6 +349,9 @@ const whiteTower2 = new Tower("white")
 const blackTower1 = new Tower("black")
 const blackTower2 = new Tower("black")
 
+let squareWhiteKing = null
+let squareBlackKing = null
+
 // Function to fill the initial board
 const fillInitialBoard = () => {
 
@@ -384,6 +387,8 @@ const fillInitialBoard = () => {
                 piece.innerHTML = whiteKing.figure
                 piece.dataset.player = "white"
                 piece.dataset.chessPiece = "king"
+
+                squareWhiteKing = square
     
                 square = document.getElementsByClassName("square")[4]
                 piece = document.createElement("p")
@@ -392,6 +397,8 @@ const fillInitialBoard = () => {
                 piece.innerHTML = blackKing.figure
                 piece.dataset.player = "black"
                 piece.dataset.chessPiece = "king"
+
+                squareBlackKing = square
 
                 break
             
@@ -599,7 +606,6 @@ document.querySelectorAll('.square').forEach((square) => {
             selectPiece(square)
         }
     })
-
 })
 
 function selectPiece(square) {
@@ -619,6 +625,7 @@ function movePiece(square) {
                 square.querySelector('.pieces').remove()
                 square.appendChild(pieceSelected)
             }
+            isCheck(square)
             changeTurn()
         }
         squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
@@ -626,3 +633,26 @@ function movePiece(square) {
         squareOrigin = null
     }
 }
+
+//function for knowing if it's check or not
+function isCheck(square) {
+    if(square.querySelector('.pieces').dataset.player === "white") {
+        if(getChessPiece(square).isLegalMove(square, squareBlackKing)) {
+            console.log("Es jaque")
+            return true
+        }else {
+            console.log("No lo es")
+            return false
+        }
+    }else if(square.querySelector('.pieces').dataset.player === "black") {
+        if(getChessPiece(square).isLegalMove(square, squareWhiteKing)) {
+            console.log("Es jaque")
+            return true
+        }else {
+            console.log("No lo es")
+            return false
+        }
+    }
+}
+
+// TODO: Hacer función que recorra las casillas y filtre las casillas del oponente getOponentSquares()
