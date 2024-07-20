@@ -651,10 +651,6 @@ function isCheck(color) {
     const squareKing = getKingPosition(color)
     for(let square of squares) {
         if(getChessPiece(square).isLegalMove(squareKing, square)) {
-            console.log(getChessPiece(square))
-            console.log(square)
-            console.log(squareKing)
-            console.log("Es jaque")
             return true
         }
     }
