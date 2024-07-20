@@ -558,7 +558,7 @@ function getKingPosition(color) {
 
 // Function for getting the chess piece of the square
 const getChessPiece = (square) => {
-    switch (pieceSelected.dataset.chessPiece) {
+    switch (square.querySelector('.pieces').dataset.chessPiece) {
         case "pawn":
             if (square.querySelector('.pieces').dataset.player === "white") {
                 return whitePawn
@@ -649,31 +649,15 @@ function movePiece(square) {
 function isCheck(color) {
     const squares = getOpponentSquares(color)
     const squareKing = getKingPosition(color)
-    for(const square of squares) {
+    for(let square of squares) {
         if(getChessPiece(square).isLegalMove(squareKing, square)) {
+            console.log(getChessPiece(square))
+            console.log(square)
+            console.log(squareKing)
             console.log("Es jaque")
             return true
         }
     }
-    /*
-    if(square.querySelector('.pieces').dataset.player === "white") {
-        if(getChessPiece(square).isLegalMove(square, squareBlackKing)) {
-            console.log("Es jaque")
-            return true
-        }else {
-            console.log("No lo es")
-            return false
-        }
-    }else if(square.querySelector('.pieces').dataset.player === "black") {
-        if(getChessPiece(square).isLegalMove(square, squareWhiteKing)) {
-            console.log("Es jaque")
-            return true
-        }else {
-            console.log("No lo es")
-            return false
-        }
-    }
-        */
 }
 
 // TODO: Hacer función que recorra las casillas y filtre las casillas del oponente getOpponentSquares()
