@@ -545,6 +545,17 @@ function changeTurn() {
     }
 }
 
+// Function for getting the king's position
+function getKingPosition(color) {
+    let squareKing
+    if(color === "white") {
+        squareKing = squareWhiteKing
+    }else {
+        squareKing = squareBlackKing
+    }
+    return squareKing
+}
+
 // Function for getting the chess piece of the square
 const getChessPiece = (square) => {
     switch (pieceSelected.dataset.chessPiece) {
@@ -625,8 +636,8 @@ function movePiece(square) {
                 square.querySelector('.pieces').remove()
                 square.appendChild(pieceSelected)
             }
-            isCheck(square)
             changeTurn()
+            isCheck(playerActive)
         }
         squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
         pieceSelected = null
@@ -635,7 +646,16 @@ function movePiece(square) {
 }
 
 //function for knowing if it's check or not
-function isCheck(square) {
+function isCheck(color) {
+    const squares = getOpponentSquares(color)
+    const squareKing = getKingPosition(color)
+    for(const square of squares) {
+        if(getChessPiece(square).isLegalMove(squareKing, square)) {
+            console.log("Es jaque")
+            return true
+        }
+    }
+    /*
     if(square.querySelector('.pieces').dataset.player === "white") {
         if(getChessPiece(square).isLegalMove(square, squareBlackKing)) {
             console.log("Es jaque")
@@ -653,6 +673,16 @@ function isCheck(square) {
             return false
         }
     }
+        */
 }
 
-// TODO: Hacer función que recorra las casillas y filtre las casillas del oponente getOponentSquares()
+// TODO: Hacer función que recorra las casillas y filtre las casillas del oponente getOpponentSquares()
+function getOpponentSquares (color) {
+    const squares = []
+    document.querySelectorAll('.square').forEach((square) => {
+        if(square.querySelector('.pieces') && square.querySelector('.pieces').dataset.player !== color) {
+            squares.push(square)
+        }
+    })
+    return squares
+}
