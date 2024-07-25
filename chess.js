@@ -702,13 +702,14 @@ function getSquares(color) {
 // Function to get all moves that are possible for a player
 function getAllPossibleMoves(color) {
     const squares = getSquares(color)
-    const possibleMoves = []
+    let set = new Set()
     for(let squarePiece of squares) {
         document.querySelectorAll('.square').forEach((square) => {
             if(getChessPiece(squarePiece).isLegalMove(square, squarePiece)) {
-                possibleMoves.push(square)
+                set.add(square)
             }
         })
     }
+    const possibleMoves = Array.from(set)
     console.log(possibleMoves)
 }
