@@ -659,17 +659,24 @@ function selectPiece(square) {
 
 function movePiece(square) {
     if(getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
-        //if(isCheck(getOpponentColor(playerActive))) {
-            if(!square.querySelector('.pieces')) {
-                square.appendChild(pieceSelected)
-            }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
-                square.querySelector('.pieces').remove()
-                square.appendChild(pieceSelected)
+        if(!square.querySelector('.pieces')) {
+            square.appendChild(pieceSelected)
+            if(!isCheck(playerActive)) {
+                changeTurn()
+            }else {
+                squareOrigin.appendChild(pieceSelected)
             }
-            changeTurn()
-            isCheck(playerActive)
-            getAllPossibleMoves(playerActive)
-        //}
+        }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
+            const enemyPiece = square.querySelector('.pieces')
+            square.querySelector('.pieces').remove()
+            square.appendChild(pieceSelected)
+            if(!isCheck(playerActive)) {
+                changeTurn()
+            }else {
+                squareOrigin.appendChild(pieceSelected)
+                square.appendChild(enemyPiece)
+            }
+        }
     }
     squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
     pieceSelected = null
@@ -678,13 +685,11 @@ function movePiece(square) {
 
 //function for knowing if the color player it's on check or not
 function isCheck(color) {
-    const squares = getSquares(getOpponentColor(color))
+    const squares = getAllPossibleMoves(getOpponentColor(color))
     const squareKing = getKingPosition(color)
-    for(let square of squares) {
-        if(getChessPiece(square).isLegalMove(squareKing, square)) {
-            console.log("Es jaque")
-            return true
-        }
+    if(squares.includes(squareKing)) {
+        console.log("Es jaque")
+        return true
     }
 }
 
@@ -711,5 +716,5 @@ function getAllPossibleMoves(color) {
         })
     }
     const possibleMoves = Array.from(set)
-    console.log(possibleMoves)
+    return possibleMoves
 }
