@@ -639,16 +639,77 @@ const getChessPiece = (square) => {
 let pieceSelected = null
 let squareOrigin = null
 
+let gameFinished = false;
 
+function handleSquareClick(event) {
+    if (gameFinished) {
+        return; // Si el juego no está activo, no hacer nada
+    }
+
+    let square = event.target;
+    if(!square.classList.contains('square')) {
+        square = square.parentElement
+    }
+
+    if (isCheck(playerActive)) {
+        if (isCheckMate(playerActive)) {
+            gameFinished = true; // Detener el juego
+            removeEventListeners(); // Remover todos los event listeners
+            showModal();
+            return;
+        }
+    }
+    
+    if (pieceSelected) {
+        movePiece(square);
+    } else if (squareHasOwnPiece(square, playerActive)) {
+        selectPiece(square);
+    }
+}
+
+function showModal() {
+    const modal = document.getElementById("myModal");
+    const span = document.getElementsByClassName("close")[0];
+
+    modal.style.display = "block";
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+}
+
+function removeEventListeners() {
+    document.querySelectorAll('.square').forEach((square) => {
+        square.removeEventListener('click', handleSquareClick);
+    });
+}
+
+// Añadir event listeners a todas las casillas
 document.querySelectorAll('.square').forEach((square) => {
+    square.addEventListener('click', handleSquareClick);
+});
+
+
+/*document.querySelectorAll('.square').forEach((square) => {
     square.addEventListener('click', () => {
+        if(isCheck(playerActive)) {
+            if(isCheckMate(playerActive)) {
+                return
+            }
+        }
         if (pieceSelected) {
             movePiece(square)
         } else if (squareHasOwnPiece(square, playerActive)) {
             selectPiece(square)
         }
     })
-})
+})*/
 
 function selectPiece(square) {
     pieceSelected = square.querySelector('.pieces')
@@ -661,20 +722,42 @@ function movePiece(square) {
     if(getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
         if(!square.querySelector('.pieces')) {
             square.appendChild(pieceSelected)
+            if(getChessPiece(square) === whiteKing) {
+                squareWhiteKing = square
+            }else if(getChessPiece(square) === blackKing) {
+                squareBlackKing = square
+            }
             if(!isCheck(playerActive)) {
                 changeTurn()
             }else {
+                isCheckMate(playerActive)
                 squareOrigin.appendChild(pieceSelected)
+                if(getChessPiece(squareOrigin) === whiteKing) {
+                    squareWhiteKing = squareOrigin
+                }else if(getChessPiece(squareOrigin) === blackKing) {
+                    squareBlackKing = squareOrigin
+                }
             }
         }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
             const enemyPiece = square.querySelector('.pieces')
             square.querySelector('.pieces').remove()
             square.appendChild(pieceSelected)
+            if(getChessPiece(square) === whiteKing) {
+                squareWhiteKing = square
+            }else if(getChessPiece(square) === blackKing) {
+                squareBlackKing = square
+            }
             if(!isCheck(playerActive)) {
                 changeTurn()
             }else {
+                isCheckMate(playerActive)
                 squareOrigin.appendChild(pieceSelected)
                 square.appendChild(enemyPiece)
+                if(getChessPiece(squareOrigin) === whiteKing) {
+                    squareWhiteKing = squareOrigin
+                }else if(getChessPiece(squareOrigin) === blackKing) {
+                    squareBlackKing = squareOrigin
+                }
             }
         }
     }
@@ -688,7 +771,6 @@ function isCheck(color) {
     const squares = getAllPossibleMoves(getOpponentColor(color))
     const squareKing = getKingPosition(color)
     if(squares.includes(squareKing)) {
-        console.log("Es jaque")
         return true
     }
 }
@@ -717,4 +799,36 @@ function getAllPossibleMoves(color) {
     }
     const possibleMoves = Array.from(set)
     return possibleMoves
+}
+
+// Function for knowing if it's check mate or not
+function isCheckMate(color) {
+    const squares = getAllPossibleMoves(getOpponentColor(color))
+    const piece = document.createElement("p")
+    piece.classList.add("pieces")
+
+    for(let squarePossibleMove of squares) {
+        if(squarePossibleMove.querySelector('.pieces')) {
+            const enemyPiece = squarePossibleMove.querySelector('.pieces')
+            squarePossibleMove.querySelector('.pieces').remove()
+            squarePossibleMove.appendChild(piece)
+            if(!isCheck(color)) {
+                squarePossibleMove.querySelector('.pieces').remove()
+                squarePossibleMove.appendChild(enemyPiece)
+                return false
+            }else {
+                squarePossibleMove.querySelector('.pieces').remove()
+                squarePossibleMove.appendChild(enemyPiece)
+            }
+        }else {
+            squarePossibleMove.appendChild(piece)
+            if(!isCheck(color)) {
+                squarePossibleMove.querySelector('.pieces').remove()
+                return false
+            }else {
+                squarePossibleMove.querySelector('.pieces').remove()
+            }
+        }
+    }
+    return true
 }
