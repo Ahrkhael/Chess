@@ -639,11 +639,12 @@ const getChessPiece = (square) => {
 let pieceSelected = null
 let squareOrigin = null
 
-let gameFinished = false;
+let gameFinished = false
+let winner = null
 
 function handleSquareClick(event) {
     if (gameFinished) {
-        return; // Si el juego no está activo, no hacer nada
+        return
     }
 
     let square = event.target;
@@ -651,65 +652,49 @@ function handleSquareClick(event) {
         square = square.parentElement
     }
 
+    if (pieceSelected) {
+        movePiece(square)
+    } else if (squareHasOwnPiece(square, playerActive)) {
+        selectPiece(square)
+    }
+
     if (isCheck(playerActive)) {
         if (isCheckMate(playerActive)) {
-            gameFinished = true; // Detener el juego
-            removeEventListeners(); // Remover todos los event listeners
-            showModal();
-            return;
+            gameFinished = true
+            removeEventListeners()
+            showModal()
+            return
         }
-    }
-    
-    if (pieceSelected) {
-        movePiece(square);
-    } else if (squareHasOwnPiece(square, playerActive)) {
-        selectPiece(square);
     }
 }
 
 function showModal() {
-    const modal = document.getElementById("myModal");
-    const span = document.getElementsByClassName("close")[0];
+    const modal = document.getElementById("myModal")
+    const span = document.getElementsByClassName("close")[0]
 
-    modal.style.display = "block";
+    modal.style.display = "block"
 
     span.onclick = function() {
-        modal.style.display = "none";
+        modal.style.display = "none"
     }
 
     window.onclick = function(event) {
         if (event.target === modal) {
-            modal.style.display = "none";
+            modal.style.display = "none"
         }
     }
 }
 
 function removeEventListeners() {
     document.querySelectorAll('.square').forEach((square) => {
-        square.removeEventListener('click', handleSquareClick);
-    });
+        square.removeEventListener('click', handleSquareClick)
+    })
 }
 
 // Añadir event listeners a todas las casillas
 document.querySelectorAll('.square').forEach((square) => {
-    square.addEventListener('click', handleSquareClick);
-});
-
-
-/*document.querySelectorAll('.square').forEach((square) => {
-    square.addEventListener('click', () => {
-        if(isCheck(playerActive)) {
-            if(isCheckMate(playerActive)) {
-                return
-            }
-        }
-        if (pieceSelected) {
-            movePiece(square)
-        } else if (squareHasOwnPiece(square, playerActive)) {
-            selectPiece(square)
-        }
-    })
-})*/
+    square.addEventListener('click', handleSquareClick)
+})
 
 function selectPiece(square) {
     pieceSelected = square.querySelector('.pieces')
