@@ -44,25 +44,92 @@ class King {
         }
     }
     isLegalMove(square, squareOrigin) {
-        if(square !== squareOrigin && !squareHasOwnPiece(square, this.player)) {
-            let diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
-            let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
-            if(square.dataset.row === squareOrigin.dataset.row) {
-                if(diffX === -1 || diffX === 1) {
-                    this.hasMoved = true
-                    return true
-                }
-            }else if(square.dataset.column === squareOrigin.dataset.column) {
-                if(diffY === -1 || diffY === 1) {
-                    this.hasMoved = true
-                    return true
-                }
-            }else if(Math.abs(diffX) === Math.abs(diffY) && Math.abs(diffX) === 1) {
-                this.hasMoved = true
-                return true
+        if(square === squareOrigin || squareHasOwnPiece(square, this.player)) {
+            return false
+        }
+
+        const diffX = Number(square.dataset.column) - Number(squareOrigin.dataset.column)
+        const diffY = Number(square.dataset.row) - Number(squareOrigin.dataset.row)
+
+        // Movimientos horizontales, verticales y diagonales de un cuadro
+        if(Math.abs(diffX) <= 1 && Math.abs(diffY) <= 1) {
+            return true
+        }
+
+        // Movimiento de enroque
+        if(diffY === 0 && Math.abs(diffX) === 2) {
+            if(this.player === "White") {
+                return canCastle(whiteKing, diffX === -2 ? whiteTower1 : whiteTower2)
+            }else {
+                return canCastle(blackKing, diffX === -2 ? blackTower1 : blackTower2)
+            }
+        }
+        
+        return false
+    }
+}
+
+// Function for checking if the king can castle or not
+function canCastle(king, tower) {
+    if (king.hasMoved || tower.hasMoved) {
+        return false
+    }
+
+    const opponentColor = getOpponentColor(king.player)
+    const enemyPossibleMoves = getAllPossibleMoves(opponentColor)
+    
+    if (isCheck(king.player, enemyPossibleMoves)) {
+        return false
+    }
+
+    const squaresBetween = getSquaresBetween(king, tower)
+
+    if(squaresBetween.length === 2) {
+        for (let square of squaresBetween) {
+            if (square.querySelector('.pieces') || enemyPossibleMoves.includes(square)) {
+                return false
+            }
+        }
+    }else {
+        for (let square of squaresBetween) {
+            if (square.querySelector('.pieces')) {
+                return false
+            }
+        }
+        if( enemyPossibleMoves.includes(squaresBetween[1]) || enemyPossibleMoves.includes(squaresBetween[2]) ) {
+            return false
+        }
+    }
+
+    return true
+}
+
+function getSquaresBetween(king, tower) {
+    const squares = []
+
+    if(king.player === "White") {
+        if(tower === whiteTower1) {
+            for (let i = 57; i <= 59; i++) {
+                squares.push(document.getElementsByClassName('square')[i])
+            }
+        }else {
+            for (let i = 61; i <= 62; i++) {
+                squares.push(document.getElementsByClassName('square')[i])
+            }
+        }
+    }else {
+        if(tower === blackTower1) {
+            for (let i = 1; i <= 3; i++) {
+                squares.push(document.getElementsByClassName('square')[i])
+            }
+        }else {
+            for (let i = 5; i <= 6; i++) {
+                squares.push(document.getElementsByClassName('square')[i])
             }
         }
     }
+
+    return squares
 }
 
 class Queen {
@@ -317,7 +384,6 @@ class Tower {
                         }
                     }
                 }
-                this.hasMoved = true
                 return true
             }else if(square.dataset.column === squareOrigin.dataset.column) {
                 let diffY = Number(squareOrigin.dataset.row) - Number(square.dataset.row)
@@ -334,7 +400,6 @@ class Tower {
                         }
                     }
                 }
-                this.hasMoved = true
                 return true
             }
         }
@@ -568,6 +633,21 @@ function getKingPosition(color) {
     return squareKing
 }
 
+// Function for getting the tower's position
+function getTowerInitialPosition(tower) {
+    let squareStartTower
+    if(tower === blackTower1) {
+        squareStartTower = document.getElementsByClassName('square')[0]
+    }else if(tower === blackTower2) {
+        squareStartTower = document.getElementsByClassName('square')[7]
+    }else if(tower === whiteTower1) {
+        squareStartTower = document.getElementsByClassName('square')[56]
+    }else if(tower === whiteTower2) {
+        squareStartTower = document.getElementsByClassName('square')[63]
+    }
+    return squareStartTower
+}
+
 function squareHasOwnPiece(square, player) {
     if(square.querySelector('.pieces')) {
         if(square.querySelector('.pieces').dataset.player === player) {
@@ -658,8 +738,10 @@ function handleSquareClick(event) {
         selectPiece(square)
     }
 
-    if (isCheck(playerActive)) {
-        if (isCheckMate(playerActive)) {
+    const enemyPossibleMoves = getAllPossibleMoves(getOpponentColor(playerActive))
+
+    if (isCheck(playerActive, enemyPossibleMoves)) {
+        if (isCheckMate(playerActive, enemyPossibleMoves)) {
             gameFinished = true
             winner = getOpponentColor(playerActive)
             removeEventListeners()
@@ -718,17 +800,37 @@ function selectPiece(square) {
 
 function movePiece(square) {
     if(getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
+        const enemyPossibleMoves = getAllPossibleMoves(getOpponentColor(playerActive))
         if(!square.querySelector('.pieces')) {
             square.appendChild(pieceSelected)
             if(getChessPiece(square) === whiteKing) {
                 squareWhiteKing = square
+                whiteKing.hasMoved = true
+                if(square === document.getElementsByClassName('square')[62]) {
+                    document.getElementsByClassName('square')[61].appendChild(getTowerInitialPosition(whiteTower2).querySelector('.pieces'))
+                }else if(square === document.getElementsByClassName('square')[58]) {
+                    document.getElementsByClassName('square')[59].appendChild(getTowerInitialPosition(whiteTower1).querySelector('.pieces'))
+                }
             }else if(getChessPiece(square) === blackKing) {
                 squareBlackKing = square
+                blackKing.hasMoved = true
+                if(square === document.getElementsByClassName('square')[6]) {
+                    document.getElementsByClassName('square')[5].appendChild(getTowerInitialPosition(blackTower2).querySelector('.pieces'))
+                }else if(square === document.getElementsByClassName('square')[2]) {
+                    document.getElementsByClassName('square')[3].appendChild(getTowerInitialPosition(blackTower1).querySelector('.pieces'))
+                }
+            }else if(getChessPiece(square) === whiteTower1) {
+                whiteTower1.hasMoved = true
+            }else if(getChessPiece(square) === whiteTower2) {
+                whiteTower2.hasMoved = true
+            }else if(getChessPiece(square) === blackTower1) {
+                blackTower1.hasMoved = true
+            }else if(getChessPiece(square) === blackTower2) {
+                blackTower2.hasMoved = true
             }
-            if(!isCheck(playerActive)) {
+            if(!isCheck(playerActive, enemyPossibleMoves)) {
                 changeTurn()
             }else {
-                isCheckMate(playerActive)
                 squareOrigin.appendChild(pieceSelected)
                 if(getChessPiece(squareOrigin) === whiteKing) {
                     squareWhiteKing = squareOrigin
@@ -745,10 +847,9 @@ function movePiece(square) {
             }else if(getChessPiece(square) === blackKing) {
                 squareBlackKing = square
             }
-            if(!isCheck(playerActive)) {
+            if(!isCheck(playerActive, enemyPossibleMoves)) {
                 changeTurn()
             }else {
-                isCheckMate(playerActive)
                 squareOrigin.appendChild(pieceSelected)
                 square.appendChild(enemyPiece)
                 if(getChessPiece(squareOrigin) === whiteKing) {
@@ -764,16 +865,7 @@ function movePiece(square) {
     squareOrigin = null
 }
 
-//function for knowing if the color player it's on check or not
-function isCheck(color) {
-    const squares = getAllPossibleMoves(getOpponentColor(color))
-    const squareKing = getKingPosition(color)
-    if(squares.includes(squareKing)) {
-        return true
-    }
-}
-
-// Function to get all squares that have an opponent piece
+// Function to get all squares that have a player piece
 function getSquares(color) {
     const squares = []
     document.querySelectorAll('.square').forEach((square) => {
@@ -799,18 +891,25 @@ function getAllPossibleMoves(color) {
     return possibleMoves
 }
 
+//function for knowing if the color player it's on check or not
+function isCheck(color, enemyPossibleMoves) {
+    const squareKing = getKingPosition(color)
+    if(enemyPossibleMoves.includes(squareKing)) {
+        return true
+    }
+}
+
 // Function for knowing if it's check mate or not
-function isCheckMate(color) {
-    const squares = getAllPossibleMoves(getOpponentColor(color))
+function isCheckMate(color, enemyPossibleMoves) {
     const piece = document.createElement("p")
     piece.classList.add("pieces")
 
-    for(let squarePossibleMove of squares) {
+    for(let squarePossibleMove of enemyPossibleMoves) {
         if(squarePossibleMove.querySelector('.pieces')) {
             const enemyPiece = squarePossibleMove.querySelector('.pieces')
             squarePossibleMove.querySelector('.pieces').remove()
             squarePossibleMove.appendChild(piece)
-            if(!isCheck(color)) {
+            if(!isCheck(color, enemyPossibleMoves)) {
                 squarePossibleMove.querySelector('.pieces').remove()
                 squarePossibleMove.appendChild(enemyPiece)
                 return false
@@ -820,7 +919,7 @@ function isCheckMate(color) {
             }
         }else {
             squarePossibleMove.appendChild(piece)
-            if(!isCheck(color)) {
+            if(!isCheck(color, enemyPossibleMoves)) {
                 squarePossibleMove.querySelector('.pieces').remove()
                 return false
             }else {
