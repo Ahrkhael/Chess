@@ -55,15 +55,6 @@ class King {
         if(Math.abs(diffX) <= 1 && Math.abs(diffY) <= 1) {
             return true
         }
-
-        // Movimiento de enroque
-        if(diffY === 0 && Math.abs(diffX) === 2) {
-            if(this.player === "White") {
-                return canCastle(whiteKing, diffX === -2 ? whiteTower1 : whiteTower2)
-            }else {
-                return canCastle(blackKing, diffX === -2 ? blackTower1 : blackTower2)
-            }
-        }
         
         return false
     }
@@ -805,30 +796,23 @@ function movePiece(square) {
             square.appendChild(pieceSelected)
             if(getChessPiece(square) === whiteKing) {
                 squareWhiteKing = square
-                whiteKing.hasMoved = true
-                if(square === document.getElementsByClassName('square')[62]) {
-                    document.getElementsByClassName('square')[61].appendChild(getTowerInitialPosition(whiteTower2).querySelector('.pieces'))
-                }else if(square === document.getElementsByClassName('square')[58]) {
-                    document.getElementsByClassName('square')[59].appendChild(getTowerInitialPosition(whiteTower1).querySelector('.pieces'))
-                }
             }else if(getChessPiece(square) === blackKing) {
                 squareBlackKing = square
-                blackKing.hasMoved = true
-                if(square === document.getElementsByClassName('square')[6]) {
-                    document.getElementsByClassName('square')[5].appendChild(getTowerInitialPosition(blackTower2).querySelector('.pieces'))
-                }else if(square === document.getElementsByClassName('square')[2]) {
-                    document.getElementsByClassName('square')[3].appendChild(getTowerInitialPosition(blackTower1).querySelector('.pieces'))
-                }
-            }else if(getChessPiece(square) === whiteTower1) {
-                whiteTower1.hasMoved = true
-            }else if(getChessPiece(square) === whiteTower2) {
-                whiteTower2.hasMoved = true
-            }else if(getChessPiece(square) === blackTower1) {
-                blackTower1.hasMoved = true
-            }else if(getChessPiece(square) === blackTower2) {
-                blackTower2.hasMoved = true
             }
             if(!isCheck(playerActive, enemyPossibleMoves)) {
+                if(getChessPiece(square) === whiteKing) {
+                    whiteKing.hasMoved = true
+                }else if(getChessPiece(square) === blackKing) {
+                    blackKing.hasMoved = true
+                }else if(getChessPiece(square) === whiteTower1) {
+                    whiteTower1.hasMoved = true
+                }else if(getChessPiece(square) === whiteTower2) {
+                    whiteTower2.hasMoved = true
+                }else if(getChessPiece(square) === blackTower1) {
+                    blackTower1.hasMoved = true
+                }else if(getChessPiece(square) === blackTower2) {
+                    blackTower2.hasMoved = true
+                }
                 changeTurn()
             }else {
                 squareOrigin.appendChild(pieceSelected)
@@ -848,6 +832,19 @@ function movePiece(square) {
                 squareBlackKing = square
             }
             if(!isCheck(playerActive, enemyPossibleMoves)) {
+                if(getChessPiece(square) === whiteKing) {
+                    whiteKing.hasMoved = true
+                }else if(getChessPiece(square) === blackKing) {
+                    blackKing.hasMoved = true
+                }else if(getChessPiece(square) === whiteTower1) {
+                    whiteTower1.hasMoved = true
+                }else if(getChessPiece(square) === whiteTower2) {
+                    whiteTower2.hasMoved = true
+                }else if(getChessPiece(square) === blackTower1) {
+                    blackTower1.hasMoved = true
+                }else if(getChessPiece(square) === blackTower2) {
+                    blackTower2.hasMoved = true
+                }
                 changeTurn()
             }else {
                 squareOrigin.appendChild(pieceSelected)
@@ -858,6 +855,38 @@ function movePiece(square) {
                     squareBlackKing = squareOrigin
                 }
             }
+        }
+    }else if(getChessPiece(squareOrigin) === whiteKing && square === document.getElementsByClassName('square')[62]) {
+        if(canCastle(whiteKing, whiteTower2)) {
+            squareWhiteKing = square
+            whiteKing.hasMoved = true
+            square.appendChild(pieceSelected)
+            document.getElementsByClassName('square')[61].appendChild(getTowerInitialPosition(whiteTower2).querySelector('.pieces'))
+            changeTurn()
+        }
+    }else if(getChessPiece(squareOrigin) === whiteKing && square === document.getElementsByClassName('square')[58]) {
+        if(canCastle(whiteKing, whiteTower1)) {
+            squareWhiteKing = square
+            whiteKing.hasMoved = true
+            square.appendChild(pieceSelected)
+            document.getElementsByClassName('square')[59].appendChild(getTowerInitialPosition(whiteTower1).querySelector('.pieces'))
+            changeTurn()
+        }
+    }else if(getChessPiece(squareOrigin) === blackKing && square === document.getElementsByClassName('square')[6]) {
+        if(canCastle(blackKing, blackTower2)) {
+            squareBlackKing = square
+            blackKing.hasMoved = true
+            square.appendChild(pieceSelected)
+            document.getElementsByClassName('square')[5].appendChild(getTowerInitialPosition(blackTower2).querySelector('.pieces'))
+            changeTurn()
+        }
+    }else if(getChessPiece(squareOrigin) === blackKing && square === document.getElementsByClassName('square')[2]) {
+        if(canCastle(blackKing, blackTower1)) {
+            squareBlackKing = square
+            blackKing.hasMoved = true
+            square.appendChild(pieceSelected)
+            document.getElementsByClassName('square')[3].appendChild(getTowerInitialPosition(blackTower1).querySelector('.pieces'))
+            changeTurn()
         }
     }
     squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
