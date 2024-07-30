@@ -69,7 +69,7 @@ function canCastle(king, tower) {
     const opponentColor = getOpponentColor(king.player)
     const enemyPossibleMoves = getAllPossibleMoves(opponentColor)
     
-    if (isCheck(king.player, enemyPossibleMoves)) {
+    if (isCheck(king.player)) {
         return false
     }
 
@@ -729,10 +729,8 @@ function handleSquareClick(event) {
         selectPiece(square)
     }
 
-    const enemyPossibleMoves = getAllPossibleMoves(getOpponentColor(playerActive))
-
-    if (isCheck(playerActive, enemyPossibleMoves)) {
-        if (isCheckMate(playerActive, enemyPossibleMoves)) {
+    if (isCheck(playerActive)) {
+        if (isCheckMate(playerActive)) {
             gameFinished = true
             winner = getOpponentColor(playerActive)
             removeEventListeners()
@@ -791,7 +789,6 @@ function selectPiece(square) {
 
 function movePiece(square) {
     if(getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
-        const enemyPossibleMoves = getAllPossibleMoves(getOpponentColor(playerActive))
         if(!square.querySelector('.pieces')) {
             square.appendChild(pieceSelected)
             if(getChessPiece(square) === whiteKing) {
@@ -799,7 +796,7 @@ function movePiece(square) {
             }else if(getChessPiece(square) === blackKing) {
                 squareBlackKing = square
             }
-            if(!isCheck(playerActive, enemyPossibleMoves)) {
+            if(!isCheck(playerActive)) {
                 if(getChessPiece(square) === whiteKing) {
                     whiteKing.hasMoved = true
                 }else if(getChessPiece(square) === blackKing) {
@@ -831,7 +828,7 @@ function movePiece(square) {
             }else if(getChessPiece(square) === blackKing) {
                 squareBlackKing = square
             }
-            if(!isCheck(playerActive, enemyPossibleMoves)) {
+            if(!isCheck(playerActive)) {
                 if(getChessPiece(square) === whiteKing) {
                     whiteKing.hasMoved = true
                 }else if(getChessPiece(square) === blackKing) {
@@ -907,54 +904,90 @@ function getSquares(color) {
 
 // Function to get all moves that are possible for a player
 function getAllPossibleMoves(color) {
-    const squares = getSquares(color)
-    let set = new Set()
-    for(let squarePiece of squares) {
+    const squares = getSquares(color);
+    let moves = [];
+
+    for (let squarePiece of squares) {
+        const piece = getChessPiece(squarePiece);
         document.querySelectorAll('.square').forEach((square) => {
-            if(getChessPiece(squarePiece).isLegalMove(square, squarePiece)) {
-                set.add(square)
+            if (piece.isLegalMove(square, squarePiece)) {
+                moves.push({ piece, from: squarePiece, to: square });
             }
-        })
+        });
     }
-    const possibleMoves = Array.from(set)
-    return possibleMoves
+
+    return moves;
 }
 
+
 //function for knowing if the color player it's on check or not
-function isCheck(color, enemyPossibleMoves) {
+function isCheck(color) {
+    const enemyPossibleMoves = getAllPossibleMoves(getOpponentColor(color))
     const squareKing = getKingPosition(color)
-    if(enemyPossibleMoves.includes(squareKing)) {
+    if(enemyPossibleMoves.some(move => move.to === squareKing)) {
         return true
     }
 }
 
 // Function for knowing if it's check mate or not
-function isCheckMate(color, enemyPossibleMoves) {
-    const piece = document.createElement("p")
-    piece.classList.add("pieces")
+function isCheckMate(color) {
+    const pieceImaginary = document.createElement("p")
+    pieceImaginary.classList.add("pieces")
+    const possibleMoves = getAllPossibleMoves(color)
 
-    for(let squarePossibleMove of enemyPossibleMoves) {
-        if(squarePossibleMove.querySelector('.pieces')) {
-            const enemyPiece = squarePossibleMove.querySelector('.pieces')
-            squarePossibleMove.querySelector('.pieces').remove()
-            squarePossibleMove.appendChild(piece)
-            if(!isCheck(color, enemyPossibleMoves)) {
-                squarePossibleMove.querySelector('.pieces').remove()
-                squarePossibleMove.appendChild(enemyPiece)
+    for(let move of possibleMoves) {
+        const { piece, from, to } = move
+
+        if(to.querySelector('.pieces')) {
+            const enemyPiece = to.querySelector('.pieces')
+            to.querySelector('.pieces').remove()
+            to.appendChild(pieceImaginary)
+            if(piece instanceof King) {
+                if(piece.player === "White") {
+                    squareWhiteKing = to
+                }else {
+                    squareBlackKing = to
+                }
+            }
+            if(!isCheck(color)) {
+                to.querySelector('.pieces').remove()
+                to.appendChild(enemyPiece)
                 return false
             }else {
-                squarePossibleMove.querySelector('.pieces').remove()
-                squarePossibleMove.appendChild(enemyPiece)
+                to.querySelector('.pieces').remove()
+                to.appendChild(enemyPiece)
+            }
+            if(piece instanceof King) {
+                if(piece.player === "White") {
+                    squareWhiteKing = from
+                }else {
+                    squareBlackKing = from
+                }
             }
         }else {
-            squarePossibleMove.appendChild(piece)
-            if(!isCheck(color, enemyPossibleMoves)) {
-                squarePossibleMove.querySelector('.pieces').remove()
+            to.appendChild(pieceImaginary)
+            if(piece instanceof King) {
+                if(piece.player === "White") {
+                    squareWhiteKing = to
+                }else {
+                    squareBlackKing = to
+                }
+            }
+            if(!isCheck(color)) {
+                to.querySelector('.pieces').remove()
                 return false
             }else {
-                squarePossibleMove.querySelector('.pieces').remove()
+                to.querySelector('.pieces').remove()
+            }
+            if(piece instanceof King) {
+                if(piece.player === "White") {
+                    squareWhiteKing = from
+                }else {
+                    squareBlackKing = from
+                }
             }
         }
     }
+
     return true
 }
