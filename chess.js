@@ -68,7 +68,7 @@ function canCastle(king, tower) {
 
     const opponentColor = getOpponentColor(king.player)
     const enemyPossibleMoves = getAllPossibleMoves(opponentColor)
-    
+
     if (isCheck(king.player)) {
         return false
     }
@@ -77,7 +77,7 @@ function canCastle(king, tower) {
 
     if(squaresBetween.length === 2) {
         for (let square of squaresBetween) {
-            if (square.querySelector('.pieces') || enemyPossibleMoves.includes(square)) {
+            if (square.querySelector('.pieces') || enemyPossibleMoves.some(move => move.to === square)) {
                 return false
             }
         }
@@ -87,7 +87,7 @@ function canCastle(king, tower) {
                 return false
             }
         }
-        if( enemyPossibleMoves.includes(squaresBetween[1]) || enemyPossibleMoves.includes(squaresBetween[2]) ) {
+        if( enemyPossibleMoves.some(move => move.to === squaresBetween[1]) || enemyPossibleMoves.some(move => move.to === squaresBetween[2]) ) {
             return false
         }
     }
