@@ -71,3 +71,13 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+@keyframes blink {
+    0% { background-color: red; }
+    50% { background-color: transparent; }
+    100% { background-color: red; }
+}
+
+.blinking {
+    animation: blink 1s infinite;
+}
