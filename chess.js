@@ -812,6 +812,7 @@ function movePiece(square) {
                 }
                 changeTurn()
             }else {
+                showErrorEffect(getKingPosition(playerActive))
                 squareOrigin.appendChild(pieceSelected)
                 if(getChessPiece(squareOrigin) === whiteKing) {
                     squareWhiteKing = squareOrigin
@@ -844,6 +845,7 @@ function movePiece(square) {
                 }
                 changeTurn()
             }else {
+                showErrorEffect(getKingPosition(playerActive))
                 squareOrigin.appendChild(pieceSelected)
                 square.appendChild(enemyPiece)
                 if(getChessPiece(squareOrigin) === whiteKing) {
@@ -990,4 +992,16 @@ function isCheckMate(color) {
     }
 
     return true
+}
+
+function showErrorEffect(square) {
+    
+    square.classList.add('blinking');
+
+    const errorSound = new Audio('./sound-effect-error.mp3');
+    errorSound.play();
+
+    setTimeout(() => {
+        square.classList.remove('blinking');
+    }, 3000);
 }
