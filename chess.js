@@ -888,9 +888,39 @@ function movePiece(square) {
             changeTurn()
         }
     }
+    if(getChessPiece(square) === whitePawn && square.dataset.row == 8) {
+        showPromotionMenu(square, "White")
+    }
     squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
     pieceSelected = null
     squareOrigin = null
+}
+
+function showPromotionMenu(square, color) {
+    square.querySelector('.pieces').remove()
+
+    const menu = document.createElement("div")
+    menu.classList.add("promotion-menu")
+    square.appendChild(menu)
+    const select = document.createElement("select")
+    select.setAttribute("id", "promotion-select")
+    menu.appendChild(select)
+
+    const options = [
+        new Queen(color),
+        new Knight(color),
+        new Bishop(color),
+        new Tower(color)
+    ]
+    
+    for (let i = 0; i < options.length; i++) {
+        let option = document.createElement("option")
+        option.value = options[i].figure
+        option.text = options[i].figure
+        select.appendChild(option)
+    }
+
+    select.size = options.length
 }
 
 // Function to get all squares that have a player piece
