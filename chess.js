@@ -13,9 +13,9 @@ for(let i=0; i<8; i++) {
         square.classList.add("square")
 
         if ((i+j)%2===0) {
-            square.style.backgroundColor="#FFF8DC"
+            square.classList.add("white-square")
         }else {
-            square.style.backgroundColor="#DEB887"
+            square.classList.add("black-square")
         }
 
         row.appendChild(square)
@@ -996,12 +996,16 @@ function isCheckMate(color) {
 
 function showErrorEffect(square) {
     
-    square.classList.add('blinking');
+    if (square.classList.contains('white-square')) {
+        square.classList.add('blinking-white')
+    } else if (square.classList.contains('black-square')) {
+        square.classList.add('blinking-black')
+    }
 
-    const errorSound = new Audio('./sound-effect-error.mp3');
-    errorSound.play();
+    const errorSound = new Audio('./sound-effect-error.mp3')
+    errorSound.play()
 
     setTimeout(() => {
-        square.classList.remove('blinking');
-    }, 3000);
+        square.classList.remove('blinking-white', 'blinking-black')
+    }, 3000)
 }

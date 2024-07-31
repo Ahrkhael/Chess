@@ -11,6 +11,14 @@
     height: 50px;
 }
 
+.white-square {
+    background-color: #FFF8DC;
+}
+
+.black-square {
+    background-color: #DEB887;
+}
+
 .row {
     display: flex;
     flex-wrap: wrap;
@@ -72,12 +80,22 @@
     cursor: pointer;
 }
 
-@keyframes blink {
+@keyframes blink-white {
     0% { background-color: red; }
-    50% { background-color: transparent; }
+    50% { background-color: #FFF8DC; }
     100% { background-color: red; }
 }
 
-.blinking {
-    animation: blink 1s infinite;
+@keyframes blink-black {
+    0% { background-color: red; }
+    50% { background-color: #DEB887; }
+    100% { background-color: red; }
+}
+
+.blinking-white {
+    animation: blink-white 1s infinite;
+}
+
+.blinking-black {
+    animation: blink-black 1s infinite;
 }
