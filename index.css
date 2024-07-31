@@ -1,3 +1,7 @@
+body {
+    background-color: #051937;
+}
+
 #title {
     text-align: center;
     font-size: 20px;
@@ -106,8 +110,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white;
-    border: 1px solid black;
 }
 
 .promotion-menu select {

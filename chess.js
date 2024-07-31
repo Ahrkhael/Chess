@@ -414,8 +414,10 @@ const blackBishop = new Bishop("Black")
 
 const whiteTower1 = new Tower("White")
 const whiteTower2 = new Tower("White")
+const whiteTower3 = new Tower("White")
 const blackTower1 = new Tower("Black")
 const blackTower2 = new Tower("Black")
+const blackTower3 = new Tower("Black")
 
 let squareWhiteKing = null
 let squareBlackKing = null
@@ -704,6 +706,12 @@ const getChessPiece = (square) => {
             }else {
                 return blackTower2
             }
+        case "tower3":
+            if (square.querySelector('.pieces').dataset.player === "White") {
+                return whiteTower3
+            }else {
+                return blackTower3
+            }
     }
 }
 
@@ -783,7 +791,7 @@ document.querySelectorAll('.square').forEach((square) => {
 function selectPiece(square) {
     pieceSelected = square.querySelector('.pieces')
     squareOrigin = square
-    square.dataset.originalColor = square.style.backgroundColor; // Save the original color
+    square.dataset.originalColor = square.style.backgroundColor
     square.style.backgroundColor = 'yellow'
 }
 
@@ -810,15 +818,20 @@ function movePiece(square) {
                 }else if(getChessPiece(square) === blackTower2) {
                     blackTower2.hasMoved = true
                 }
+                if(getChessPiece(square) === whitePawn && square.dataset.row == 8) {
+                    showPromotionMenu(square, "White")
+                }else if(getChessPiece(square) === blackPawn && square.dataset.row == 1) {
+                    showPromotionMenu(square, "Black")
+                }
                 changeTurn()
             }else {
-                showErrorEffect(getKingPosition(playerActive))
                 squareOrigin.appendChild(pieceSelected)
                 if(getChessPiece(squareOrigin) === whiteKing) {
                     squareWhiteKing = squareOrigin
                 }else if(getChessPiece(squareOrigin) === blackKing) {
                     squareBlackKing = squareOrigin
                 }
+                showErrorEffect(getKingPosition(playerActive))
             }
         }else if (square.querySelector('.pieces').dataset.player !== pieceSelected.dataset.player) {
             const enemyPiece = square.querySelector('.pieces')
@@ -843,9 +856,13 @@ function movePiece(square) {
                 }else if(getChessPiece(square) === blackTower2) {
                     blackTower2.hasMoved = true
                 }
+                if(getChessPiece(square) === whitePawn && square.dataset.row == 8) {
+                    showPromotionMenu(square, "White")
+                }else if(getChessPiece(square) === blackPawn && square.dataset.row == 1) {
+                    showPromotionMenu(square, "Black")
+                }
                 changeTurn()
             }else {
-                showErrorEffect(getKingPosition(playerActive))
                 squareOrigin.appendChild(pieceSelected)
                 square.appendChild(enemyPiece)
                 if(getChessPiece(squareOrigin) === whiteKing) {
@@ -853,6 +870,7 @@ function movePiece(square) {
                 }else if(getChessPiece(squareOrigin) === blackKing) {
                     squareBlackKing = squareOrigin
                 }
+                showErrorEffect(getKingPosition(playerActive))
             }
         }
     }else if(getChessPiece(squareOrigin) === whiteKing && square === document.getElementsByClassName('square')[62]) {
@@ -888,9 +906,6 @@ function movePiece(square) {
             changeTurn()
         }
     }
-    if(getChessPiece(square) === whitePawn && square.dataset.row == 8) {
-        showPromotionMenu(square, "White")
-    }
     squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
     pieceSelected = null
     squareOrigin = null
@@ -901,10 +916,19 @@ function showPromotionMenu(square, color) {
 
     const menu = document.createElement("div")
     menu.classList.add("promotion-menu")
+
     square.appendChild(menu)
     const select = document.createElement("select")
     select.setAttribute("id", "promotion-select")
     menu.appendChild(select)
+
+    const emptyOption = document.createElement("option")
+    emptyOption.value = ""
+    emptyOption.text = ""
+    emptyOption.disabled = true
+    emptyOption.hidden = true
+    emptyOption.selected = true
+    select.appendChild(emptyOption)
 
     const options = [
         new Queen(color),
@@ -915,12 +939,37 @@ function showPromotionMenu(square, color) {
     
     for (let i = 0; i < options.length; i++) {
         let option = document.createElement("option")
-        option.value = options[i].figure
+        option.value = i
         option.text = options[i].figure
         select.appendChild(option)
     }
 
     select.size = options.length
+
+    select.addEventListener("input", function() {
+        const selectedOption = options[select.value]
+        promotePawn(square, selectedOption)
+    })
+}
+
+function promotePawn(square, value) {
+    square.innerHTML = ''
+    let piece = document.createElement("p")
+    piece.classList.add('pieces')
+    piece.innerHTML = value.figure
+    piece.dataset.player = value.player
+
+    if (value instanceof Queen) {
+        piece.dataset.chessPiece = "queen";
+    } else if (value instanceof Knight) {
+        piece.dataset.chessPiece = "knight";
+    } else if (value instanceof Bishop) {
+        piece.dataset.chessPiece = "bishop";
+    } else if (value instanceof Tower) {
+        piece.dataset.chessPiece = "tower3";
+    }
+
+    square.appendChild(piece)
 }
 
 // Function to get all squares that have a player piece
