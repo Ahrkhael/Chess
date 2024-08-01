@@ -1,3 +1,7 @@
+body {
+    background-color: #051937;
+}
+
 #title {
     text-align: center;
     font-size: 20px;
@@ -9,6 +13,14 @@
     align-items: center;
     width: 50px;
     height: 50px;
+}
+
+.white-square {
+    background-color: #FFF8DC;
+}
+
+.black-square {
+    background-color: #DEB887;
 }
 
 .row {
@@ -72,12 +84,47 @@
     cursor: pointer;
 }
 
-@keyframes blink {
+@keyframes blink-white {
     0% { background-color: red; }
-    50% { background-color: transparent; }
+    50% { background-color: #FFF8DC; }
     100% { background-color: red; }
 }
 
-.blinking {
-    animation: blink 1s infinite;
+@keyframes blink-black {
+    0% { background-color: red; }
+    50% { background-color: #DEB887; }
+    100% { background-color: red; }
+}
+
+.blinking-white {
+    animation: blink-white 1s infinite;
+}
+
+.blinking-black {
+    animation: blink-black 1s infinite;
+}
+
+.promotion-menu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promotion-menu select {
+    width: 100%;
+    height: 100%;
+    font-size: 2em;
+    background: inherit;
+    border: none;
+    outline: none;
+    appearance: none;
+    text-align: center;
+}
+
+#promotion-select option {
+    padding: 0%;
+    height: 50px;
+    width: 50px;
 }
