@@ -1,3 +1,7 @@
+body {
+    background-color: #051937;
+}
+
 #title {
     text-align: center;
     font-size: 20px;
@@ -98,4 +102,29 @@
 
 .blinking-black {
     animation: blink-black 1s infinite;
+}
+
+.promotion-menu {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promotion-menu select {
+    width: 100%;
+    height: 100%;
+    font-size: 2em;
+    background: inherit;
+    border: none;
+    outline: none;
+    appearance: none;
+    text-align: center;
+}
+
+#promotion-select option {
+    padding: 0%;
+    height: 50px;
+    width: 50px;
 }
