@@ -1,11 +1,30 @@
+@font-face {
+    font-family: "chess";
+    src: url("./Agraham.otf");
+}
+
+@font-face {
+    font-family: "title";
+    src: url("./LibreCaslonText-Regular.ttf");
+}
+
 body {
-    background-color: #051937;
+    background-color: #EFD8B2;
+}
+
+#title-chess {
+    text-align: center;
+    font-family: chess;
+    font-size: 28px;
+    margin-top: 8px;
 }
 
 #title {
     text-align: center;
+    font-family: title;
     font-size: 20px;
-    color: blueviolet;
+    color: brown;
+    margin-bottom: 8px;
 }
 
 .square {
@@ -13,6 +32,7 @@ body {
     align-items: center;
     width: 50px;
     height: 50px;
+    position: relative;
 }
 
 .white-square {
@@ -36,6 +56,7 @@ body {
     margin-top: 50px;
     width: 400px;
     height: 400px;
+    border: 12px ridge brown;
 }
 
 .pieces {
@@ -105,26 +126,32 @@ body {
 }
 
 .promotion-menu {
+    position: absolute;
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .promotion-menu select {
+    position: absolute;
     width: 100%;
-    height: 100%;
+    height: 200px;
     font-size: 2em;
     background: inherit;
     border: none;
     outline: none;
     appearance: none;
     text-align: center;
+    top: 0;
+    background: aliceblue;
+    overflow: hidden;
 }
 
 #promotion-select option {
-    padding: 0%;
     height: 50px;
     width: 50px;
+    padding: 0%;
 }
