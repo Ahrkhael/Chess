@@ -122,3 +122,9 @@ body {
     appearance: none;
     text-align: center;
 }
+
+#promotion-select option {
+    padding: 0%;
+    height: 50px;
+    width: 50px;
+}

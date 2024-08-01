@@ -784,9 +784,13 @@ function removeEventListeners() {
 }
 
 // Add event listeners to all squares
-document.querySelectorAll('.square').forEach((square) => {
-    square.addEventListener('click', handleSquareClick)
-})
+function addSquaresEventListeners() {
+    document.querySelectorAll('.square').forEach((square) => {
+        square.addEventListener('click', handleSquareClick)
+    })
+}
+
+addSquaresEventListeners()
 
 function selectPiece(square) {
     pieceSelected = square.querySelector('.pieces')
@@ -912,6 +916,9 @@ function movePiece(square) {
 }
 
 function showPromotionMenu(square, color) {
+
+    removeEventListeners()
+
     square.querySelector('.pieces').remove()
 
     const menu = document.createElement("div")
@@ -923,9 +930,6 @@ function showPromotionMenu(square, color) {
     menu.appendChild(select)
 
     const emptyOption = document.createElement("option")
-    emptyOption.value = ""
-    emptyOption.text = ""
-    emptyOption.disabled = true
     emptyOption.hidden = true
     emptyOption.selected = true
     select.appendChild(emptyOption)
@@ -946,9 +950,10 @@ function showPromotionMenu(square, color) {
 
     select.size = options.length
 
-    select.addEventListener("input", function() {
+    select.addEventListener("input", () => {
         const selectedOption = options[select.value]
         promotePawn(square, selectedOption)
+        addSquaresEventListeners()
     })
 }
 
