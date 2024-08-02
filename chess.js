@@ -922,7 +922,11 @@ function showPromotionMenu(square, color) {
     square.querySelector('.pieces').remove()
 
     const menu = document.createElement("div")
-    menu.classList.add("promotion-menu")
+    if(color === "White") {
+        menu.classList.add("promotion-menu-white")
+    }else {
+        menu.classList.add("promotion-menu-black")
+    }
 
     square.appendChild(menu)
     const select = document.createElement("select")
@@ -934,12 +938,16 @@ function showPromotionMenu(square, color) {
     emptyOption.selected = true
     select.appendChild(emptyOption)
 
-    const options = [
+    let options = [
         new Queen(color),
         new Knight(color),
         new Bishop(color),
         new Tower(color)
     ]
+
+    if(menu.classList.contains("promotion-menu-black")) {
+        options = options.reverse()
+    }
     
     for (let i = 0; i < options.length; i++) {
         let option = document.createElement("option")
@@ -1086,7 +1094,7 @@ function showErrorEffect(square) {
         square.classList.add('blinking-black')
     }
 
-    const errorSound = new Audio('./sound-effect-error.mp3')
+    const errorSound = new Audio('./public/sounds/sound-effect-error.mp3')
     errorSound.play()
 
     setTimeout(() => {
