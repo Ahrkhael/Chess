@@ -43,6 +43,11 @@ body {
     background-color: #DEB887;
 }
 
+.highlight {
+    outline: 2px solid yellow;
+    box-shadow: 0 0 10px yellow;
+}
+
 .row {
     display: flex;
     flex-wrap: wrap;
