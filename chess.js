@@ -1090,6 +1090,13 @@ function isCheckMate(color) {
             if(!isCheck(color)) {
                 to.querySelector('.pieces').remove()
                 to.appendChild(enemyPiece)
+                if(piece instanceof King) {
+                    if(piece.player === "White") {
+                        squareWhiteKing = from
+                    }else {
+                        squareBlackKing = from
+                    }
+                }
                 return false
             }else {
                 to.querySelector('.pieces').remove()
@@ -1113,6 +1120,13 @@ function isCheckMate(color) {
             }
             if(!isCheck(color)) {
                 to.querySelector('.pieces').remove()
+                if(piece instanceof King) {
+                    if(piece.player === "White") {
+                        squareWhiteKing = from
+                    }else {
+                        squareBlackKing = from
+                    }
+                }
                 return false
             }else {
                 to.querySelector('.pieces').remove()
