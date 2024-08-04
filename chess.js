@@ -799,9 +799,14 @@ function selectPiece(square) {
     squareOrigin = square
     square.dataset.originalColor = square.style.backgroundColor
     square.style.backgroundColor = 'yellow'
+
+    const possibleMovesPieceSelected = getAllPossibleMovesSquare(playerActive, square)
+    highlightSquares(possibleMovesPieceSelected)
+    
 }
 
 function movePiece(square) {
+    removeHighlights()
     if(getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
         if(!square.querySelector('.pieces')) {
             square.appendChild(pieceSelected)
@@ -1000,23 +1005,69 @@ function getSquares(color) {
 
 // Function to get all moves that are possible for a player
 function getAllPossibleMoves(color) {
-    const squares = getSquares(color);
-    let moves = [];
+    const squares = getSquares(color)
+    let moves = []
 
     for (let squarePiece of squares) {
-        const piece = getChessPiece(squarePiece);
+        const piece = getChessPiece(squarePiece)
         document.querySelectorAll('.square').forEach((square) => {
             if (piece.isLegalMove(square, squarePiece)) {
-                moves.push({ piece, from: squarePiece, to: square });
+                moves.push({ piece, from: squarePiece, to: square })
             }
-        });
+        })
     }
 
-    return moves;
+    return moves
 }
 
+// Function to get all moves that are possible for a piece in a square
+function getAllPossibleMovesSquare(color, square) {
 
-//function for knowing if the color player it's on check or not
+    const squares = getAllPossibleMoves(color)
+    
+    let filteredMoves = squares.filter(move => move.from === square)
+
+    if(getChessPiece(square) === whiteKing) {
+        if(canCastle(whiteKing, whiteTower1)) {
+            filteredMoves.push({ whiteKing, from: square, to: document.getElementsByClassName("square")[58] })
+        }
+        if(canCastle(whiteKing, whiteTower2)) {
+            filteredMoves.push({ whiteKing, from: square, to: document.getElementsByClassName("square")[62] })
+        }
+    }else if(getChessPiece(square) === blackKing) {
+        if(canCastle(blackKing, blackTower1)) {
+            filteredMoves.push({ whiteKing, from: square, to: document.getElementsByClassName("square")[2] })
+        }
+        if(canCastle(blackKing, blackTower2)) {
+            filteredMoves.push({ whiteKing, from: square, to: document.getElementsByClassName("square")[6] })
+        }
+    }
+
+    return filteredMoves.map(move => move.to)
+}
+
+// Function for highlighting the squares
+function highlightSquares(squares) {
+    squares.forEach(square => {
+        square.classList.add('highlight')
+        if(square.querySelector('.pieces')) {
+            square.classList.add('highlight-piece-square')
+        }else {
+            square.classList.add('highlight-empty-square')
+        }
+    })
+}
+
+// Function to remove highlights from all squares
+function removeHighlights() {
+    document.querySelectorAll('.highlight').forEach(square => {
+        square.classList.remove('highlight')
+        square.classList.remove('highlight-empty-square')
+        square.classList.remove('highlight-piece-square')
+    })
+}
+
+// Function for knowing if the color player it's on check or not
 function isCheck(color) {
     const enemyPossibleMoves = getAllPossibleMoves(getOpponentColor(color))
     const squareKing = getKingPosition(color)
@@ -1048,6 +1099,13 @@ function isCheckMate(color) {
             if(!isCheck(color)) {
                 to.querySelector('.pieces').remove()
                 to.appendChild(enemyPiece)
+                if(piece instanceof King) {
+                    if(piece.player === "White") {
+                        squareWhiteKing = from
+                    }else {
+                        squareBlackKing = from
+                    }
+                }
                 return false
             }else {
                 to.querySelector('.pieces').remove()
@@ -1071,6 +1129,13 @@ function isCheckMate(color) {
             }
             if(!isCheck(color)) {
                 to.querySelector('.pieces').remove()
+                if(piece instanceof King) {
+                    if(piece.player === "White") {
+                        squareWhiteKing = from
+                    }else {
+                        squareBlackKing = from
+                    }
+                }
                 return false
             }else {
                 to.querySelector('.pieces').remove()
