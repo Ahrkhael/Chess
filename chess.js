@@ -1048,6 +1048,11 @@ function getAllPossibleMovesSquare(color, square) {
 function highlightSquares(squares) {
     squares.forEach(square => {
         square.classList.add('highlight')
+        if(square.querySelector('.pieces')) {
+            square.classList.add('highlight-piece-square')
+        }else {
+            square.classList.add('highlight-empty-square')
+        }
     })
 }
 
@@ -1055,6 +1060,8 @@ function highlightSquares(squares) {
 function removeHighlights() {
     document.querySelectorAll('.highlight').forEach(square => {
         square.classList.remove('highlight')
+        square.classList.remove('highlight-empty-square')
+        square.classList.remove('highlight-piece-square')
     })
 }
 
