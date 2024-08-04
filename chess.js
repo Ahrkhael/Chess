@@ -1,3 +1,5 @@
+const baseUrl = "chess"
+
 // At the beginning, we must create the board
 const board = document.getElementById("board")
 let square = null
@@ -1151,7 +1153,7 @@ function isCheckMate(color) {
     return true
 }
 
-const errorSound = new Audio('./public/sounds/sound-effect-error.mp3')
+const errorSound = new Audio(baseUrl + '/public/sounds/sound-effect-error.mp3')
 
 function showErrorEffect(square) {
     
