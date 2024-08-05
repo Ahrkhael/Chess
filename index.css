@@ -8,6 +8,12 @@
     src: url("./public/fonts/LibreCaslonText-Regular.ttf");
 }
 
+.prevent-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
 body {
     background-color: #EFD8B2;
 }
@@ -163,6 +169,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 100;
+    cursor: pointer;
 }
 
 .promotion-menu-black {
@@ -174,6 +181,7 @@ body {
     align-items: center;
     z-index: 100;
     transform: translateY(-300%);
+    cursor: pointer;
 }
 
 #promotion-select {
