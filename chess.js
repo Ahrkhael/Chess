@@ -748,6 +748,14 @@ function handleSquareClick(event) {
     }
 }
 
+function newGame() {
+    console.log("Nueva partida")
+}
+
+function surrender() {
+    console.log("Has abandonado")
+}
+
 function showModal() {
     const modal = document.getElementById("myModal")
     const span = document.getElementsByClassName("close")[0]
