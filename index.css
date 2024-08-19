@@ -81,8 +81,10 @@ body {
 }
 
 #container {
-    display: flex;
+    display: grid;
     align-items: center;
+    justify-content: space-between;
+    grid-template-columns: 1fr 1fr;
 }
 
 #buttons {
@@ -91,6 +93,7 @@ body {
     align-items: center;
     background-color: #ddd; /* Color de fondo para mejor visualización */
     padding: 10px;
+    width: 200px;
     border: 1px solid #000;
 }
 
@@ -101,7 +104,7 @@ body {
 }
 
 #board {
-    margin: auto;
+    margin-left: 550px;
     margin-top: 50px;
     margin-right: 20px;
     width: 400px;
