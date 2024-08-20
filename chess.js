@@ -605,6 +605,17 @@ const fillInitialBoard = () => {
 
 fillInitialBoard()
 
+// Function to remove all pieces from the board
+const cleanBoard = () => {
+
+    for (let i=0; i<64; i++) {
+        
+        square = document.getElementsByClassName("square")[i]
+        square.innerHTML = ""
+        
+    }
+}
+
 let playerActive = "White"
 
 function changeTurn() {
@@ -750,6 +761,8 @@ function handleSquareClick(event) {
 
 function newGame() {
     console.log("Nueva partida")
+    cleanBoard()
+    fillInitialBoard()
 }
 
 function surrender() {
