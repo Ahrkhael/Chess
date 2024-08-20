@@ -763,6 +763,7 @@ function newGame() {
     console.log("Nueva partida")
     cleanBoard()
     fillInitialBoard()
+    addSquaresEventListeners()
 }
 
 function surrender() {
