@@ -601,6 +601,8 @@ const fillInitialBoard = () => {
                 break
         }
     }
+    addSquaresEventListeners()
+
 }
 
 fillInitialBoard()
@@ -752,7 +754,7 @@ function handleSquareClick(event) {
         if (isCheckMate(playerActive)) {
             gameFinished = true
             winner = getOpponentColor(playerActive)
-            removeEventListeners()
+            removeSquaresEventListeners()
             showModal()
             return
         }
@@ -760,14 +762,18 @@ function handleSquareClick(event) {
 }
 
 function newGame() {
-    console.log("Nueva partida")
+    playerActive = "White"
+    gameFinished = false
+    winner = null
     cleanBoard()
     fillInitialBoard()
-    addSquaresEventListeners()
 }
 
 function surrender() {
-    console.log("Has abandonado")
+    gameFinished = true
+    winner = getOpponentColor(playerActive)
+    removeSquaresEventListeners()
+    showModal()
 }
 
 function showModal() {
@@ -776,6 +782,7 @@ function showModal() {
     const modalContent = document.getElementsByClassName("modal-content")[0]
     const textToShow = document.createElement("p")
     modalContent.appendChild(textToShow)
+    textToShow.classList.add("text-modal")
 
     textToShow.innerHTML = "The game is over."
 
@@ -799,7 +806,7 @@ function showModal() {
 }
 
 // Remove event listeners from all squares
-function removeEventListeners() {
+function removeSquaresEventListeners() {
     document.querySelectorAll('.square').forEach((square) => {
         square.removeEventListener('click', handleSquareClick)
     })
@@ -811,8 +818,6 @@ function addSquaresEventListeners() {
         square.addEventListener('click', handleSquareClick)
     })
 }
-
-addSquaresEventListeners()
 
 function selectPiece(square) {
     pieceSelected = square.querySelector('.pieces')
@@ -944,7 +949,7 @@ function movePiece(square) {
 
 function showPromotionMenu(square, color) {
 
-    removeEventListeners()
+    removeSquaresEventListeners()
 
     square.querySelector('.pieces').remove()
 
