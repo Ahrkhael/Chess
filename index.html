@@ -16,13 +16,15 @@
 
         <div id="buttons">
             <button onclick="newGame()">Nueva partida</button>
-            <button onclick="surrender()">Abandonar</button>
+            <button id="draw" onclick="offerDraw()">Ofrecer tablar</button>
+            <button id="surrender" onclick="surrender()">Abandonar</button>
         </div>
     </div>
 
-	<div id="myModal" class="modal">
+	<div id="game-ended-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
+            <p id="result-message"></p>
         </div>
     </div>
     

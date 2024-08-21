@@ -674,6 +674,14 @@ function getOpponentColor(color) {
     }
 }
 
+function translateColor(color) {
+    if(color === "White") {
+        return "Blancas"
+    }else if(color === "Black") {
+        return "Negras"
+    }
+}
+
 // Function for getting the chess piece of the square
 const getChessPiece = (square) => {
     switch (square.querySelector('.pieces').dataset.chessPiece) {
@@ -753,7 +761,7 @@ function handleSquareClick(event) {
     if (isCheck(playerActive)) {
         if (isCheckMate(playerActive)) {
             gameFinished = true
-            winner = getOpponentColor(playerActive)
+            winner = translateColor(getOpponentColor(playerActive))
             removeSquaresEventListeners()
             showModal()
             return
@@ -767,30 +775,41 @@ function newGame() {
     winner = null
     cleanBoard()
     fillInitialBoard()
+    document.getElementById("draw").disabled = false
+    document.getElementById("surrender").disabled = false
+}
+
+function offerDraw() {
+    if(confirm(`${getOpponentColor(playerActive)} accepts?`)) {
+        gameFinished = true
+        removeSquaresEventListeners()
+        showModal()
+    }
 }
 
 function surrender() {
     gameFinished = true
-    winner = getOpponentColor(playerActive)
+    winner = translateColor(getOpponentColor(playerActive))
     removeSquaresEventListeners()
     showModal()
 }
 
 function showModal() {
-    const modal = document.getElementById("myModal")
+    const modal = document.getElementById("game-ended-modal")
     const span = document.getElementsByClassName("close")[0]
-    const modalContent = document.getElementsByClassName("modal-content")[0]
-    const textToShow = document.createElement("p")
-    modalContent.appendChild(textToShow)
+    const textToShow = document.getElementById("result-message")
     textToShow.classList.add("text-modal")
 
-    textToShow.innerHTML = "The game is over."
+    textToShow.innerHTML = "La partida ha acabado."
 
     if(winner) {
-        textToShow.innerHTML += `</br>${winner} has won.`
+        textToShow.innerHTML += `<br>${winner} ganan.`
     }else {
-        textToShow.innerHTML += "It's a draw."
+        textToShow.innerHTML += "<br>Se han firmado tablas."
     }
+
+    document.getElementById("draw").disabled = true
+    document.getElementById("surrender").disabled = true
 
     modal.style.display = "block"
 
