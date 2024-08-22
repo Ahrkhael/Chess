@@ -16,7 +16,7 @@
 
         <div id="buttons">
             <button onclick="newGame()">Nueva partida</button>
-            <button id="draw" onclick="offerDraw()">Ofrecer tablar</button>
+            <button id="draw" onclick="offerDraw()">Ofrecer tablas</button>
             <button id="surrender" onclick="surrender()">Abandonar</button>
         </div>
     </div>
@@ -25,6 +25,16 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <p id="result-message"></p>
+        </div>
+    </div>
+
+    <div id="draw-offering-modal" class="modal">
+        <div class="modal-content">
+            <p id="draw-confirm-message"></p>
+            <div class="modal-buttons">
+                <button class="confirm-button" id="confirmButton">Sí</button>
+                <button class="cancel-button" id="cancelButton">No</button>
+            </div>
         </div>
     </div>
     

@@ -763,7 +763,7 @@ function handleSquareClick(event) {
             gameFinished = true
             winner = translateColor(getOpponentColor(playerActive))
             removeSquaresEventListeners()
-            showModal()
+            showModalGameEnded()
             return
         }
     }
@@ -775,26 +775,60 @@ function newGame() {
     winner = null
     cleanBoard()
     fillInitialBoard()
-    document.getElementById("draw").disabled = false
-    document.getElementById("surrender").disabled = false
+    document.getElementById("draw").hidden = false
+    document.getElementById("surrender").hidden = false
 }
 
 function offerDraw() {
-    if(confirm(`${getOpponentColor(playerActive)} accepts?`)) {
+    /*
+    if(confirm(`El jugador de ${translateColor(getOpponentColor(playerActive)).toLowerCase()} acepta?`)) {
         gameFinished = true
         removeSquaresEventListeners()
-        showModal()
+        showModalGameEnded()
+    }*/
+    showModalDrawOffering()
+
+}
+
+function showModalDrawOffering() {
+
+    const modal = document.getElementById("draw-offering-modal")
+    const textToShow = document.getElementById("draw-confirm-message")
+    textToShow.classList.add("text-modal")
+
+    textToShow.innerHTML = `¿El jugador de ${translateColor(getOpponentColor(playerActive)).toLowerCase()} acepta las tablas?`
+
+    modal.style.display = "block"
+
+    confirmButton.addEventListener('click', () => {
+        modal.style.display = "none"
+        gameFinished = true
+        removeSquaresEventListeners()
+        showModalGameEnded()
+        document.getElementById("draw").hidden = true
+        document.getElementById("surrender").hidden = true
+    })
+
+    cancelButton.addEventListener('click', () => {
+        modal.style.display = "none"
+    })
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none"
+        }
     }
+
 }
 
 function surrender() {
     gameFinished = true
     winner = translateColor(getOpponentColor(playerActive))
     removeSquaresEventListeners()
-    showModal()
+    showModalGameEnded()
 }
 
-function showModal() {
+function showModalGameEnded() {
     const modal = document.getElementById("game-ended-modal")
     const span = document.getElementsByClassName("close")[0]
     const textToShow = document.getElementById("result-message")
@@ -803,13 +837,13 @@ function showModal() {
     textToShow.innerHTML = "La partida ha acabado."
 
     if(winner) {
-        textToShow.innerHTML += `<br>${winner} ganan.`
+        textToShow.innerHTML += `<br><br>${winner} ganan.`
     }else {
-        textToShow.innerHTML += "<br>Se han firmado tablas."
+        textToShow.innerHTML += "<br><br>Se han firmado tablas."
     }
 
-    document.getElementById("draw").disabled = true
-    document.getElementById("surrender").disabled = true
+    document.getElementById("draw").hidden = true
+    document.getElementById("surrender").hidden = true
 
     modal.style.display = "block"
 
