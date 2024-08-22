@@ -769,33 +769,25 @@ function handleSquareClick(event) {
     }
 }
 
+// Function to start a new game
 function newGame() {
     playerActive = "White"
     gameFinished = false
     winner = null
+
     cleanBoard()
     fillInitialBoard()
+
     document.getElementById("draw").hidden = false
     document.getElementById("surrender").hidden = false
 }
 
-function offerDraw() {
-    /*
-    if(confirm(`El jugador de ${translateColor(getOpponentColor(playerActive)).toLowerCase()} acepta?`)) {
-        gameFinished = true
-        removeSquaresEventListeners()
-        showModalGameEnded()
-    }*/
-    showModalDrawOffering()
-
-}
-
+// Function to show draw offering modal
 function showModalDrawOffering() {
 
     const modal = document.getElementById("draw-offering-modal")
     const textToShow = document.getElementById("draw-confirm-message")
     textToShow.classList.add("text-modal")
-
     textToShow.innerHTML = `¿El jugador de ${translateColor(getOpponentColor(playerActive)).toLowerCase()} acepta las tablas?`
 
     modal.style.display = "block"
@@ -818,9 +810,9 @@ function showModalDrawOffering() {
             modal.style.display = "none"
         }
     }
-
 }
 
+// Function to let player active surrender
 function surrender() {
     gameFinished = true
     winner = translateColor(getOpponentColor(playerActive))
@@ -828,6 +820,7 @@ function surrender() {
     showModalGameEnded()
 }
 
+// Function to show modal when the game finishes
 function showModalGameEnded() {
     const modal = document.getElementById("game-ended-modal")
     const span = document.getElementsByClassName("close")[0]

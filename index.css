@@ -103,6 +103,7 @@ body {
     background-color: #B08451;
     color: #541D05;
     width: 130px;
+    cursor: pointer;
 }
 
 #buttons button:hover {
