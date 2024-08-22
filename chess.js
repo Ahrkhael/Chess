@@ -787,7 +787,6 @@ function showModalDrawOffering() {
 
     const modal = document.getElementById("draw-offering-modal")
     const textToShow = document.getElementById("draw-confirm-message")
-    textToShow.classList.add("text-modal")
     textToShow.innerHTML = `¿El jugador de ${translateColor(getOpponentColor(playerActive)).toLowerCase()} acepta las tablas?`
 
     modal.style.display = "block"
