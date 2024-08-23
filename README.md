@@ -1,25 +1,25 @@
 # Chess
 
-**In progress** 
-
 Chess game made with JavaScript, HTML and CSS
 
 A demo: </br>
 
-![imagen](https://github.com/user-attachments/assets/296e1bd7-af13-4ba8-9b7b-aa0d36b101fd)
-
-Features until this moment:
-
-- Moving pieces
-- Taking oponent pieces
-- Check
-- Check mate
-- Castle kingside and queenside
-- Handling ilegal moves and playing an error sound whenever a player tries to do one
-- Pawns can promote to Queen, Knight, Bishop or Rock when they arrive the last row
-- And a lot more...
+![imagen](https://github.com/user-attachments/assets/2531c694-6e0f-46c4-a22e-41542239133a)
 
 If you want to try a web version, click on the following link:
 https://l.gjahr.com/e/chess
 
-And have fun!
+Features implemented:
+
+- Select pieces and showing the squares where it can be moved
+- Taking oponent pieces
+- Check and check mate
+- Castle kingside and queenside
+- Handling ilegal moves and playing an error sound whenever a player tries to do one
+- Pawns can promote to Queen, Knight, Bishop or Rock when they arrive the last row
+- Start a new game, offer draw to your opponent or surrender
+- Modals showing the result of the game
+- Responsive design
+- And a lot more...
+
+Enjoy!
