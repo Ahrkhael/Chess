@@ -746,6 +746,7 @@ let winner = null
 
 function handleSquareClick(event) {
     if (gameFinished) {
+        removeSquaresEventListeners()
         return
     }
 
@@ -778,10 +779,7 @@ function newGame() {
     winner = null
 
     if(pieceSelected) {
-        removeHighlights()
-        squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
-        pieceSelected = null
-        squareOrigin = null
+        removePieceSelected()
     }
 
     cleanBoard()
@@ -803,6 +801,11 @@ function showModalDrawOffering() {
     confirmButton.addEventListener('click', () => {
         modal.style.display = "none"
         gameFinished = true
+        
+        if(pieceSelected) {
+            removePieceSelected()
+        }
+
         removeSquaresEventListeners()
         showModalGameEnded()
         document.getElementById("draw").hidden = true
@@ -822,6 +825,11 @@ function showModalDrawOffering() {
 
 // Function to let player active surrender
 function surrender() {
+
+    if(pieceSelected) {
+        removePieceSelected()
+    }
+
     gameFinished = true
     winner = translateColor(getOpponentColor(playerActive))
     removeSquaresEventListeners()
@@ -882,6 +890,13 @@ function selectPiece(square) {
     const possibleMovesPieceSelected = getAllPossibleMovesSquare(playerActive, square)
     highlightSquares(possibleMovesPieceSelected)
     
+}
+
+function removePieceSelected() {
+    removeHighlights()
+    squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
+    pieceSelected = null
+    squareOrigin = null
 }
 
 function movePiece(square) {
