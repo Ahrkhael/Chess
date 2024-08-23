@@ -603,9 +603,22 @@ const fillInitialBoard = () => {
                 break
         }
     }
+    addSquaresEventListeners()
+
 }
 
 fillInitialBoard()
+
+// Function to remove all pieces from the board
+const cleanBoard = () => {
+
+    for (let i=0; i<64; i++) {
+        
+        square = document.getElementsByClassName("square")[i]
+        square.innerHTML = ""
+        
+    }
+}
 
 let playerActive = "White"
 
@@ -660,6 +673,14 @@ function getOpponentColor(color) {
         return "Black"
     }else {
         return "White"
+    }
+}
+
+function translateColor(color) {
+    if(color === "White") {
+        return "Blancas"
+    }else if(color === "Black") {
+        return "Negras"
     }
 }
 
@@ -742,28 +763,81 @@ function handleSquareClick(event) {
     if (isCheck(playerActive)) {
         if (isCheckMate(playerActive)) {
             gameFinished = true
-            winner = getOpponentColor(playerActive)
-            removeEventListeners()
-            showModal()
+            winner = translateColor(getOpponentColor(playerActive))
+            removeSquaresEventListeners()
+            showModalGameEnded()
             return
         }
     }
 }
 
-function showModal() {
-    const modal = document.getElementById("myModal")
-    const span = document.getElementsByClassName("close")[0]
-    const modalContent = document.getElementsByClassName("modal-content")[0]
-    const textToShow = document.createElement("p")
-    modalContent.appendChild(textToShow)
+// Function to start a new game
+function newGame() {
+    playerActive = "White"
+    gameFinished = false
+    winner = null
 
-    textToShow.innerHTML = "The game is over."
+    cleanBoard()
+    fillInitialBoard()
+
+    document.getElementById("draw").hidden = false
+    document.getElementById("surrender").hidden = false
+}
+
+// Function to show draw offering modal
+function showModalDrawOffering() {
+
+    const modal = document.getElementById("draw-offering-modal")
+    const textToShow = document.getElementById("draw-confirm-message")
+    textToShow.innerHTML = `¿El jugador de ${translateColor(getOpponentColor(playerActive)).toLowerCase()} acepta las tablas?`
+
+    modal.style.display = "block"
+
+    confirmButton.addEventListener('click', () => {
+        modal.style.display = "none"
+        gameFinished = true
+        removeSquaresEventListeners()
+        showModalGameEnded()
+        document.getElementById("draw").hidden = true
+        document.getElementById("surrender").hidden = true
+    })
+
+    cancelButton.addEventListener('click', () => {
+        modal.style.display = "none"
+    })
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none"
+        }
+    }
+}
+
+// Function to let player active surrender
+function surrender() {
+    gameFinished = true
+    winner = translateColor(getOpponentColor(playerActive))
+    removeSquaresEventListeners()
+    showModalGameEnded()
+}
+
+// Function to show modal when the game finishes
+function showModalGameEnded() {
+    const modal = document.getElementById("game-ended-modal")
+    const span = document.getElementsByClassName("close")[0]
+    const textToShow = document.getElementById("result-message")
+    textToShow.classList.add("text-modal")
+
+    textToShow.innerHTML = "La partida ha acabado."
 
     if(winner) {
-        textToShow.innerHTML += `</br>${winner} has won.`
+        textToShow.innerHTML += `<br><br>${winner} ganan.`
     }else {
-        textToShow.innerHTML += "It's a draw."
+        textToShow.innerHTML += "<br><br>Se han firmado tablas."
     }
+
+    document.getElementById("draw").hidden = true
+    document.getElementById("surrender").hidden = true
 
     modal.style.display = "block"
 
@@ -779,7 +853,7 @@ function showModal() {
 }
 
 // Remove event listeners from all squares
-function removeEventListeners() {
+function removeSquaresEventListeners() {
     document.querySelectorAll('.square').forEach((square) => {
         square.removeEventListener('click', handleSquareClick)
     })
@@ -791,8 +865,6 @@ function addSquaresEventListeners() {
         square.addEventListener('click', handleSquareClick)
     })
 }
-
-addSquaresEventListeners()
 
 function selectPiece(square) {
     pieceSelected = square.querySelector('.pieces')
@@ -924,7 +996,7 @@ function movePiece(square) {
 
 function showPromotionMenu(square, color) {
 
-    removeEventListeners()
+    removeSquaresEventListeners()
 
     square.querySelector('.pieces').remove()
 
