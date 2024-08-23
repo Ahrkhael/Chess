@@ -775,6 +775,13 @@ function newGame() {
     gameFinished = false
     winner = null
 
+    if(pieceSelected) {
+        removeHighlights()
+        squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
+        pieceSelected = null
+        squareOrigin = null
+    }
+
     cleanBoard()
     fillInitialBoard()
 
