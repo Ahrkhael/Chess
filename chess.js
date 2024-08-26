@@ -1,4 +1,4 @@
-const baseUrl = "chess"
+const baseUrl = "."
 
 // At the beginning, we must create the board
 const board = document.getElementById("board")
@@ -1172,8 +1172,6 @@ function isCheck(color) {
 
 // Function for knowing if it's check mate or not
 function isCheckMate(color) {
-    const pieceImaginary = document.createElement("p")
-    pieceImaginary.classList.add("pieces")
     const possibleMoves = getAllPossibleMoves(color)
 
     for(let move of possibleMoves) {
@@ -1182,7 +1180,7 @@ function isCheckMate(color) {
         if(to.querySelector('.pieces')) {
             const enemyPiece = to.querySelector('.pieces')
             to.querySelector('.pieces').remove()
-            to.appendChild(pieceImaginary)
+            to.appendChild(from.querySelector('.pieces'))
             if(piece instanceof King) {
                 if(piece.player === "White") {
                     squareWhiteKing = to
@@ -1191,7 +1189,7 @@ function isCheckMate(color) {
                 }
             }
             if(!isCheck(color)) {
-                to.querySelector('.pieces').remove()
+                from.appendChild(to.querySelector('.pieces'))
                 to.appendChild(enemyPiece)
                 if(piece instanceof King) {
                     if(piece.player === "White") {
@@ -1202,7 +1200,7 @@ function isCheckMate(color) {
                 }
                 return false
             }else {
-                to.querySelector('.pieces').remove()
+                from.appendChild(to.querySelector('.pieces'))
                 to.appendChild(enemyPiece)
             }
             if(piece instanceof King) {
@@ -1213,7 +1211,7 @@ function isCheckMate(color) {
                 }
             }
         }else {
-            to.appendChild(pieceImaginary)
+            to.appendChild(from.querySelector('.pieces'))
             if(piece instanceof King) {
                 if(piece.player === "White") {
                     squareWhiteKing = to
@@ -1222,7 +1220,7 @@ function isCheckMate(color) {
                 }
             }
             if(!isCheck(color)) {
-                to.querySelector('.pieces').remove()
+                from.appendChild(to.querySelector('.pieces'))
                 if(piece instanceof King) {
                     if(piece.player === "White") {
                         squareWhiteKing = from
@@ -1232,7 +1230,7 @@ function isCheckMate(color) {
                 }
                 return false
             }else {
-                to.querySelector('.pieces').remove()
+                from.appendChild(to.querySelector('.pieces'))
             }
             if(piece instanceof King) {
                 if(piece.player === "White") {
