@@ -1,324 +1,336 @@
 @font-face {
-    font-family: "chess";
-    src: url("./public/fonts/Agraham.otf");
+  font-family: "chess";
+  src: url("./public/fonts/Agraham.otf");
 }
 
 @font-face {
-    font-family: "title";
-    src: url("./public/fonts/LibreCaslonText-Regular.ttf");
+  font-family: "title";
+  src: url("./public/fonts/LibreCaslonText-Regular.ttf");
 }
 
 body {
-    background-color: #EFD8B2;
+  background-color: #efd8b2;
 }
 
 #title-chess {
-    text-align: center;
-    font-family: chess;
-    font-size: 28px;
-    margin-top: 8px;
+  text-align: center;
+  font-family: chess;
+  font-size: 28px;
+  margin-top: 8px;
 }
 
 #title {
-    text-align: center;
-    font-family: title;
-    font-size: 20px;
-    color: brown;
-    margin-top: 0%;
-    margin-bottom: 0%;
+  text-align: center;
+  font-family: title;
+  font-size: 20px;
+  color: brown;
+  margin-top: 0%;
+  margin-bottom: 0%;
 }
 
 #container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 #board {
-    margin-top: 2%;
-    width: 400px;
-    height: 400px;
-    border: 12px ridge brown;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  margin-top: 2%;
+  width: 400px;
+  height: 400px;
+  border: 12px ridge brown;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 400px;
-    height: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 400px;
+  height: 50px;
 }
 
 .square {
-    text-align: center;
-    align-items: center;
-    width: 50px;
-    height: 50px;
-    position: relative;
+  text-align: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  position: relative;
 }
 
 .white-square {
-    background-color: #FFF8DC;
+  background-color: #fff8dc;
 }
 
 .black-square {
-    background-color: #DEB887;
+  background-color: #deb887;
 }
 
 .pieces {
-    font-size: 30px;
-    width: 50px;
-    height: 50px;
-    margin-top: 3px;
-    margin-bottom: 0;
-    cursor: grab;
+  font-size: 30px;
+  width: 50px;
+  height: 50px;
+  margin-top: 3px;
+  margin-bottom: 0;
+  cursor: grab;
 }
 
 .highlight {
-    position: relative;
-    cursor: pointer;
+  position: relative;
+  cursor: pointer;
 }
 
 .highlight-empty-square::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 8px; /* Tamaño del punto */
-    height: 8px; /* Tamaño del punto */
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
-    transform: translate(-50%, -50%); /* Centrar el punto */
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px; /* Tamaño del punto */
+  height: 8px; /* Tamaño del punto */
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%); /* Centrar el punto */
 }
 
 .highlight-piece-square::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 80%; /* Ajusta el tamaño del círculo para que quede circunscrito */
-    height: 80%; /* Ajusta el tamaño del círculo para que quede circunscrito */
-    border: 4px solid rgba(0, 0, 0, 0.5); /* Borde negro con transparencia */
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    background-color: transparent; /* Hueco por dentro */
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%; /* Ajusta el tamaño del círculo para que quede circunscrito */
+  height: 80%; /* Ajusta el tamaño del círculo para que quede circunscrito */
+  border: 4px solid rgba(0, 0, 0, 0.5); /* Borde negro con transparencia */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background-color: transparent; /* Hueco por dentro */
 }
 
 #buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: 4%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 4%;
 }
 
 #buttons button {
-    margin: 5px 0;
-    padding: 10px;
-    font-size: 16px;
-    background-color: #B08451;
-    color: #541D05;
-    width: 130px;
-    cursor: pointer;
+  margin: 5px 0;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #b08451;
+  color: #000;
+  width: 130px;
+  cursor: pointer;
 }
 
 #buttons button:hover {
-    background-color: #BA5A31;
-    color: wheat;
+  background-color: #ba5a31;
+  color: wheat;
 }
 
 .modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: rgba(0,0,0,0.4); 
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .modal-content {
-    display: grid;
-    color: wheat;
-    background-color: #fefefe;
-    margin: 20% auto; 
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 400px;
-    height: 15%;
-    min-height: 130px;
-    text-align: center;
-    align-items: center;
-    background-color: #542109;
+  display: grid;
+  color: wheat;
+  background-color: #fefefe;
+  margin: 20% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+  height: 15%;
+  min-height: 130px;
+  text-align: center;
+  align-items: center;
+  background-color: #542109;
 }
 
 .close {
-    margin-top: -10%;
-    text-align: right;
-    font-size: 28px;
-    font-weight: bold;
+  margin-top: -10%;
+  text-align: right;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .modal-buttons {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-    gap: 10px;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  gap: 10px;
 }
 
 .modal-buttons button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .confirm-button {
-    background-color: #8C5E58;
-    color: wheat;
+  background-color: #8c5e58;
+  color: wheat;
 }
 
 .cancel-button {
-    background-color: #B08451;
-    color: wheat;
+  background-color: #b08451;
+  color: wheat;
 }
 
 @keyframes blink-white {
-    0% { background-color: red; }
-    50% { background-color: #FFF8DC; }
-    100% { background-color: red; }
+  0% {
+    background-color: red;
+  }
+  50% {
+    background-color: #fff8dc;
+  }
+  100% {
+    background-color: red;
+  }
 }
 
 @keyframes blink-black {
-    0% { background-color: red; }
-    50% { background-color: #DEB887; }
-    100% { background-color: red; }
+  0% {
+    background-color: red;
+  }
+  50% {
+    background-color: #deb887;
+  }
+  100% {
+    background-color: red;
+  }
 }
 
 .blinking-white {
-    animation: blink-white 1s infinite;
+  animation: blink-white 1s infinite;
 }
 
 .blinking-black {
-    animation: blink-black 1s infinite;
+  animation: blink-black 1s infinite;
 }
 
 .promotion-menu-white {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
 }
 
 .promotion-menu-black {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    transform: translateY(-300%);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  transform: translateY(-300%);
 }
 
 #promotion-select {
-    position: absolute;
-    width: 100%;
-    height: 200px;
-    font-size: 2em;
-    padding: 0px;
-    border: none;
-    outline: none;
-    appearance: none;
-    text-align: center;
-    top: 0;
-    background: #FFE4B5;
-    overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 200px;
+  font-size: 2em;
+  padding: 0px;
+  border: none;
+  outline: none;
+  appearance: none;
+  text-align: center;
+  top: 0;
+  background: #ffe4b5;
+  overflow: hidden;
 }
 
 #promotion-select option {
-    font-size: 30px;
-    width: 50px;
-    height: 50px;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding: 0%;
-    cursor: pointer;
+  font-size: 30px;
+  width: 50px;
+  height: 50px;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0%;
+  cursor: pointer;
 }
 
 .text-modal {
-    display: inline-block;
-    margin-top: -10%;
+  display: inline-block;
+  margin-top: -10%;
 }
 
 /* Media query for small screens */
 @media (max-width: 768px) {
-    #container {
-        flex-direction: column;
-    }
+  #container {
+    flex-direction: column;
+  }
 
-    #buttons {
-        flex-direction: row;
-        gap: 5px;
-        margin: 2% 0;
-    }
+  #buttons {
+    flex-direction: row;
+    gap: 5px;
+    margin: 2% 0;
+  }
 }
 
 /* Media query for very small screens */
 @media (max-width: 480px) {
-    #board {
-        width: 280px;
-        height: 280px;
-    }
+  #board {
+    width: 280px;
+    height: 280px;
+  }
 
-    .row {
-        width: 280px;
-        height: 35px;
-    }
+  .row {
+    width: 280px;
+    height: 35px;
+  }
 
-    .square {
-        width: 35px;
-        height: 35px;
-    }    
-    
-    .pieces {
-        font-size: 24px;
-        width: 35px;
-        height: 35px;
-        margin-top: 1px;
-    }
+  .square {
+    width: 35px;
+    height: 35px;
+  }
 
-    #buttons button {
-        width: 100px;
-        height: 58.4px;
-        font-size: 14px;
-    }
+  .pieces {
+    font-size: 24px;
+    width: 35px;
+    height: 35px;
+    margin-top: 1px;
+  }
 
-    #promotion-select {
-        height: 140px;
-    }
+  #buttons button {
+    width: 100px;
+    height: 58.4px;
+    font-size: 14px;
+  }
 
-    #promotion-select option {
-        font-size: 24px;
-        width: 35px;
-        height: 35px;
-    }
+  #promotion-select {
+    height: 140px;
+  }
+
+  #promotion-select option {
+    font-size: 24px;
+    width: 35px;
+    height: 35px;
+  }
 }
