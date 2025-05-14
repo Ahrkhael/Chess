@@ -1020,49 +1020,47 @@ function selectPiece(square) {
 
 function removePieceSelected() {
   removeHighlights();
-  squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
+  squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor;
   pieceSelected = null;
   squareOrigin = null;
 }
 
 function movePiece(square) {
   removeHighlights();
-  if (getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
+  const pieceOrigin = getChessPiece(squareOrigin);
+  if (pieceOrigin.isLegalMove(square, squareOrigin)) {
     if (!square.querySelector(".pieces")) {
       square.appendChild(pieceSelected);
-      if (getChessPiece(square) === whiteKing) {
+      if (pieceOrigin === whiteKing) {
         squareWhiteKing = square;
-      } else if (getChessPiece(square) === blackKing) {
+      } else if (pieceOrigin === blackKing) {
         squareBlackKing = square;
       }
       if (!isCheck(playerActive)) {
-        if (getChessPiece(square) === whiteKing) {
+        if (pieceOrigin === whiteKing) {
           whiteKing.hasMoved = true;
-        } else if (getChessPiece(square) === blackKing) {
+        } else if (pieceOrigin === blackKing) {
           blackKing.hasMoved = true;
-        } else if (getChessPiece(square) === whiteTower1) {
+        } else if (pieceOrigin === whiteTower1) {
           whiteTower1.hasMoved = true;
-        } else if (getChessPiece(square) === whiteTower2) {
+        } else if (pieceOrigin === whiteTower2) {
           whiteTower2.hasMoved = true;
-        } else if (getChessPiece(square) === blackTower1) {
+        } else if (pieceOrigin === blackTower1) {
           blackTower1.hasMoved = true;
-        } else if (getChessPiece(square) === blackTower2) {
+        } else if (pieceOrigin === blackTower2) {
           blackTower2.hasMoved = true;
         }
-        if (getChessPiece(square) === whitePawn && square.dataset.row == 8) {
+        if (pieceOrigin === whitePawn && square.dataset.row == 8) {
           showPromotionMenu(square, "White");
-        } else if (
-          getChessPiece(square) === blackPawn &&
-          square.dataset.row == 1
-        ) {
+        } else if (pieceOrigin === blackPawn && square.dataset.row == 1) {
           showPromotionMenu(square, "Black");
         }
         changeTurn();
       } else {
         squareOrigin.appendChild(pieceSelected);
-        if (getChessPiece(squareOrigin) === whiteKing) {
+        if (pieceOrigin === whiteKing) {
           squareWhiteKing = squareOrigin;
-        } else if (getChessPiece(squareOrigin) === blackKing) {
+        } else if (pieceOrigin === blackKing) {
           squareBlackKing = squareOrigin;
         }
         showErrorEffect(getKingPosition(playerActive));
@@ -1074,47 +1072,44 @@ function movePiece(square) {
       const enemyPiece = square.querySelector(".pieces");
       square.querySelector(".pieces").remove();
       square.appendChild(pieceSelected);
-      if (getChessPiece(square) === whiteKing) {
+      if (pieceOrigin === whiteKing) {
         squareWhiteKing = square;
-      } else if (getChessPiece(square) === blackKing) {
+      } else if (pieceOrigin === blackKing) {
         squareBlackKing = square;
       }
       if (!isCheck(playerActive)) {
-        if (getChessPiece(square) === whiteKing) {
+        if (pieceOrigin === whiteKing) {
           whiteKing.hasMoved = true;
-        } else if (getChessPiece(square) === blackKing) {
+        } else if (pieceOrigin === blackKing) {
           blackKing.hasMoved = true;
-        } else if (getChessPiece(square) === whiteTower1) {
+        } else if (pieceOrigin === whiteTower1) {
           whiteTower1.hasMoved = true;
-        } else if (getChessPiece(square) === whiteTower2) {
+        } else if (pieceOrigin === whiteTower2) {
           whiteTower2.hasMoved = true;
-        } else if (getChessPiece(square) === blackTower1) {
+        } else if (pieceOrigin === blackTower1) {
           blackTower1.hasMoved = true;
-        } else if (getChessPiece(square) === blackTower2) {
+        } else if (pieceOrigin === blackTower2) {
           blackTower2.hasMoved = true;
         }
-        if (getChessPiece(square) === whitePawn && square.dataset.row == 8) {
+        if (pieceOrigin === whitePawn && square.dataset.row == 8) {
           showPromotionMenu(square, "White");
-        } else if (
-          getChessPiece(square) === blackPawn &&
-          square.dataset.row == 1
-        ) {
+        } else if (pieceOrigin === blackPawn && square.dataset.row == 1) {
           showPromotionMenu(square, "Black");
         }
         changeTurn();
       } else {
         squareOrigin.appendChild(pieceSelected);
         square.appendChild(enemyPiece);
-        if (getChessPiece(squareOrigin) === whiteKing) {
+        if (pieceOrigin === whiteKing) {
           squareWhiteKing = squareOrigin;
-        } else if (getChessPiece(squareOrigin) === blackKing) {
+        } else if (pieceOrigin === blackKing) {
           squareBlackKing = squareOrigin;
         }
         showErrorEffect(getKingPosition(playerActive));
       }
     }
   } else if (
-    getChessPiece(squareOrigin) === whiteKing &&
+    pieceOrigin === whiteKing &&
     square === document.getElementsByClassName("square")[62]
   ) {
     if (canCastle(whiteKing, whiteTower2)) {
@@ -1129,7 +1124,7 @@ function movePiece(square) {
       changeTurn();
     }
   } else if (
-    getChessPiece(squareOrigin) === whiteKing &&
+    pieceOrigin === whiteKing &&
     square === document.getElementsByClassName("square")[58]
   ) {
     if (canCastle(whiteKing, whiteTower1)) {
@@ -1144,7 +1139,7 @@ function movePiece(square) {
       changeTurn();
     }
   } else if (
-    getChessPiece(squareOrigin) === blackKing &&
+    pieceOrigin === blackKing &&
     square === document.getElementsByClassName("square")[6]
   ) {
     if (canCastle(blackKing, blackTower2)) {
@@ -1159,7 +1154,7 @@ function movePiece(square) {
       changeTurn();
     }
   } else if (
-    getChessPiece(squareOrigin) === blackKing &&
+    pieceOrigin === blackKing &&
     square === document.getElementsByClassName("square")[2]
   ) {
     if (canCastle(blackKing, blackTower1)) {
