@@ -1,4 +1,4 @@
-const baseUrl = "chess"
+const baseUrl = "chess";
 
 // At the beginning, we must create the board
 const board = document.getElementById("board");
@@ -320,6 +320,68 @@ class Pawn {
               square.dataset.row == Number(squareOrigin.dataset.row) - 1
             ) {
               return true;
+            }
+          }
+        } else if (this.player === "White") {
+          if (lastMove.pieceOrigin === blackPawn) {
+            if (
+              Number(lastMove.squareOrigin.dataset.row) ===
+              Number(lastMove.square.dataset.row) + 2
+            ) {
+              if (
+                Number(lastMove.square.dataset.column) ===
+                  Number(squareOrigin.dataset.column) - 1 ||
+                Number(lastMove.square.dataset.column) ===
+                  Number(squareOrigin.dataset.column) + 1
+              ) {
+                if (
+                  Number(lastMove.square.dataset.row) ===
+                  Number(squareOrigin.dataset.row)
+                ) {
+                  if (
+                    Number(square.dataset.row) ===
+                    Number(lastMove.square.dataset.row) + 1
+                  ) {
+                    if (
+                      Number(lastMove.square.dataset.column) ===
+                      Number(square.dataset.column)
+                    ) {
+                      return true;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        } else if (this.player === "Black") {
+          if (lastMove.pieceOrigin === whitePawn) {
+            if (
+              Number(lastMove.squareOrigin.dataset.row) ===
+              Number(lastMove.square.dataset.row) - 2
+            ) {
+              if (
+                Number(lastMove.square.dataset.column) ===
+                  Number(squareOrigin.dataset.column) - 1 ||
+                Number(lastMove.square.dataset.column) ===
+                  Number(squareOrigin.dataset.column) + 1
+              ) {
+                if (
+                  Number(lastMove.square.dataset.row) ===
+                  Number(squareOrigin.dataset.row)
+                ) {
+                  if (
+                    Number(square.dataset.row) ===
+                    Number(lastMove.square.dataset.row) - 1
+                  ) {
+                    if (
+                      Number(lastMove.square.dataset.column) ===
+                      Number(square.dataset.column)
+                    ) {
+                      return true;
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -860,6 +922,7 @@ const getChessPiece = (square) => {
 
 let pieceSelected = null;
 let squareOrigin = null;
+let lastMove = { pieceSelected, squareOrigin, square };
 
 let gameFinished = false;
 let winner = null;
@@ -1020,49 +1083,74 @@ function selectPiece(square) {
 
 function removePieceSelected() {
   removeHighlights();
-  squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
+  squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor;
   pieceSelected = null;
   squareOrigin = null;
 }
 
 function movePiece(square) {
   removeHighlights();
-  if (getChessPiece(squareOrigin).isLegalMove(square, squareOrigin)) {
+  const pieceOrigin = getChessPiece(squareOrigin);
+  if (pieceOrigin.isLegalMove(square, squareOrigin)) {
     if (!square.querySelector(".pieces")) {
       square.appendChild(pieceSelected);
-      if (getChessPiece(square) === whiteKing) {
+      if (pieceOrigin === whiteKing) {
         squareWhiteKing = square;
-      } else if (getChessPiece(square) === blackKing) {
+      } else if (pieceOrigin === blackKing) {
         squareBlackKing = square;
       }
       if (!isCheck(playerActive)) {
-        if (getChessPiece(square) === whiteKing) {
+        if (pieceOrigin === whiteKing) {
           whiteKing.hasMoved = true;
-        } else if (getChessPiece(square) === blackKing) {
+        } else if (pieceOrigin === blackKing) {
           blackKing.hasMoved = true;
-        } else if (getChessPiece(square) === whiteTower1) {
+        } else if (pieceOrigin === whiteTower1) {
           whiteTower1.hasMoved = true;
-        } else if (getChessPiece(square) === whiteTower2) {
+        } else if (pieceOrigin === whiteTower2) {
           whiteTower2.hasMoved = true;
-        } else if (getChessPiece(square) === blackTower1) {
+        } else if (pieceOrigin === blackTower1) {
           blackTower1.hasMoved = true;
-        } else if (getChessPiece(square) === blackTower2) {
+        } else if (pieceOrigin === blackTower2) {
           blackTower2.hasMoved = true;
         }
-        if (getChessPiece(square) === whitePawn && square.dataset.row == 8) {
-          showPromotionMenu(square, "White");
-        } else if (
-          getChessPiece(square) === blackPawn &&
-          square.dataset.row == 1
-        ) {
-          showPromotionMenu(square, "Black");
+        if (pieceOrigin === whitePawn) {
+          if (square.dataset.row == 8) {
+            showPromotionMenu(square, "White");
+          } else if (
+            lastMove.pieceOrigin === blackPawn &&
+            Number(square.dataset.row) ===
+              Number(lastMove.square.dataset.row) + 1
+          ) {
+            if (
+              Number(square.dataset.column) ===
+              Number(lastMove.square.dataset.column)
+            ) {
+              lastMove.square.querySelector(".pieces").remove();
+            }
+          }
+        } else if (pieceOrigin === blackPawn) {
+          if (square.dataset.row == 1) {
+            showPromotionMenu(square, "Black");
+          } else if (
+            lastMove.pieceOrigin === whitePawn &&
+            Number(square.dataset.row) ===
+              Number(lastMove.square.dataset.row) - 1
+          ) {
+            if (
+              Number(square.dataset.column) ===
+              Number(lastMove.square.dataset.column)
+            ) {
+              lastMove.square.querySelector(".pieces").remove();
+            }
+          }
         }
+        lastMove = { pieceOrigin, squareOrigin, square };
         changeTurn();
       } else {
         squareOrigin.appendChild(pieceSelected);
-        if (getChessPiece(squareOrigin) === whiteKing) {
+        if (pieceOrigin === whiteKing) {
           squareWhiteKing = squareOrigin;
-        } else if (getChessPiece(squareOrigin) === blackKing) {
+        } else if (pieceOrigin === blackKing) {
           squareBlackKing = squareOrigin;
         }
         showErrorEffect(getKingPosition(playerActive));
@@ -1074,47 +1162,45 @@ function movePiece(square) {
       const enemyPiece = square.querySelector(".pieces");
       square.querySelector(".pieces").remove();
       square.appendChild(pieceSelected);
-      if (getChessPiece(square) === whiteKing) {
+      if (pieceOrigin === whiteKing) {
         squareWhiteKing = square;
-      } else if (getChessPiece(square) === blackKing) {
+      } else if (pieceOrigin === blackKing) {
         squareBlackKing = square;
       }
       if (!isCheck(playerActive)) {
-        if (getChessPiece(square) === whiteKing) {
+        if (pieceOrigin === whiteKing) {
           whiteKing.hasMoved = true;
-        } else if (getChessPiece(square) === blackKing) {
+        } else if (pieceOrigin === blackKing) {
           blackKing.hasMoved = true;
-        } else if (getChessPiece(square) === whiteTower1) {
+        } else if (pieceOrigin === whiteTower1) {
           whiteTower1.hasMoved = true;
-        } else if (getChessPiece(square) === whiteTower2) {
+        } else if (pieceOrigin === whiteTower2) {
           whiteTower2.hasMoved = true;
-        } else if (getChessPiece(square) === blackTower1) {
+        } else if (pieceOrigin === blackTower1) {
           blackTower1.hasMoved = true;
-        } else if (getChessPiece(square) === blackTower2) {
+        } else if (pieceOrigin === blackTower2) {
           blackTower2.hasMoved = true;
         }
-        if (getChessPiece(square) === whitePawn && square.dataset.row == 8) {
+        if (pieceOrigin === whitePawn && square.dataset.row == 8) {
           showPromotionMenu(square, "White");
-        } else if (
-          getChessPiece(square) === blackPawn &&
-          square.dataset.row == 1
-        ) {
+        } else if (pieceOrigin === blackPawn && square.dataset.row == 1) {
           showPromotionMenu(square, "Black");
         }
+        lastMove = { pieceOrigin, squareOrigin, square };
         changeTurn();
       } else {
         squareOrigin.appendChild(pieceSelected);
         square.appendChild(enemyPiece);
-        if (getChessPiece(squareOrigin) === whiteKing) {
+        if (pieceOrigin === whiteKing) {
           squareWhiteKing = squareOrigin;
-        } else if (getChessPiece(squareOrigin) === blackKing) {
+        } else if (pieceOrigin === blackKing) {
           squareBlackKing = squareOrigin;
         }
         showErrorEffect(getKingPosition(playerActive));
       }
     }
   } else if (
-    getChessPiece(squareOrigin) === whiteKing &&
+    pieceOrigin === whiteKing &&
     square === document.getElementsByClassName("square")[62]
   ) {
     if (canCastle(whiteKing, whiteTower2)) {
@@ -1126,10 +1212,11 @@ function movePiece(square) {
         .appendChild(
           getTowerInitialPosition(whiteTower2).querySelector(".pieces")
         );
+      lastMove = { pieceOrigin, squareOrigin, square };
       changeTurn();
     }
   } else if (
-    getChessPiece(squareOrigin) === whiteKing &&
+    pieceOrigin === whiteKing &&
     square === document.getElementsByClassName("square")[58]
   ) {
     if (canCastle(whiteKing, whiteTower1)) {
@@ -1141,10 +1228,11 @@ function movePiece(square) {
         .appendChild(
           getTowerInitialPosition(whiteTower1).querySelector(".pieces")
         );
+      lastMove = { pieceOrigin, squareOrigin, square };
       changeTurn();
     }
   } else if (
-    getChessPiece(squareOrigin) === blackKing &&
+    pieceOrigin === blackKing &&
     square === document.getElementsByClassName("square")[6]
   ) {
     if (canCastle(blackKing, blackTower2)) {
@@ -1156,10 +1244,11 @@ function movePiece(square) {
         .appendChild(
           getTowerInitialPosition(blackTower2).querySelector(".pieces")
         );
+      lastMove = { pieceOrigin, squareOrigin, square };
       changeTurn();
     }
   } else if (
-    getChessPiece(squareOrigin) === blackKing &&
+    pieceOrigin === blackKing &&
     square === document.getElementsByClassName("square")[2]
   ) {
     if (canCastle(blackKing, blackTower1)) {
@@ -1171,10 +1260,11 @@ function movePiece(square) {
         .appendChild(
           getTowerInitialPosition(blackTower1).querySelector(".pieces")
         );
+      lastMove = { pieceOrigin, squareOrigin, square };
       changeTurn();
     }
   }
-  squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
+  squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor;
   pieceSelected = null;
   squareOrigin = null;
 }
