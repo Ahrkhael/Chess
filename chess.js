@@ -322,6 +322,68 @@ class Pawn {
               return true;
             }
           }
+        } else if (this.player === "White") {
+          if (lastMove.pieceOrigin === blackPawn) {
+            if (
+              Number(lastMove.squareOrigin.dataset.row) ===
+              Number(lastMove.square.dataset.row) + 2
+            ) {
+              if (
+                Number(lastMove.square.dataset.column) ===
+                  Number(squareOrigin.dataset.column) - 1 ||
+                Number(lastMove.square.dataset.column) ===
+                  Number(squareOrigin.dataset.column) + 1
+              ) {
+                if (
+                  Number(lastMove.square.dataset.row) ===
+                  Number(squareOrigin.dataset.row)
+                ) {
+                  if (
+                    Number(square.dataset.row) ===
+                    Number(lastMove.square.dataset.row) + 1
+                  ) {
+                    if (
+                      Number(lastMove.square.dataset.column) ===
+                      Number(square.dataset.column)
+                    ) {
+                      return true;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        } else if (this.player === "Black") {
+          if (lastMove.pieceOrigin === whitePawn) {
+            if (
+              Number(lastMove.squareOrigin.dataset.row) ===
+              Number(lastMove.square.dataset.row) - 2
+            ) {
+              if (
+                Number(lastMove.square.dataset.column) ===
+                  Number(squareOrigin.dataset.column) - 1 ||
+                Number(lastMove.square.dataset.column) ===
+                  Number(squareOrigin.dataset.column) + 1
+              ) {
+                if (
+                  Number(lastMove.square.dataset.row) ===
+                  Number(squareOrigin.dataset.row)
+                ) {
+                  if (
+                    Number(square.dataset.row) ===
+                    Number(lastMove.square.dataset.row) - 1
+                  ) {
+                    if (
+                      Number(lastMove.square.dataset.column) ===
+                      Number(square.dataset.column)
+                    ) {
+                      return true;
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -860,6 +922,7 @@ const getChessPiece = (square) => {
 
 let pieceSelected = null;
 let squareOrigin = null;
+let lastMove = { pieceSelected, squareOrigin, square };
 
 let gameFinished = false;
 let winner = null;
@@ -1050,11 +1113,38 @@ function movePiece(square) {
         } else if (pieceOrigin === blackTower2) {
           blackTower2.hasMoved = true;
         }
-        if (pieceOrigin === whitePawn && square.dataset.row == 8) {
-          showPromotionMenu(square, "White");
-        } else if (pieceOrigin === blackPawn && square.dataset.row == 1) {
-          showPromotionMenu(square, "Black");
+        if (pieceOrigin === whitePawn) {
+          if (square.dataset.row == 8) {
+            showPromotionMenu(square, "White");
+          } else if (
+            lastMove.pieceOrigin === blackPawn &&
+            Number(square.dataset.row) ===
+              Number(lastMove.square.dataset.row) + 1
+          ) {
+            if (
+              Number(square.dataset.column) ===
+              Number(lastMove.square.dataset.column)
+            ) {
+              lastMove.square.querySelector(".pieces").remove();
+            }
+          }
+        } else if (pieceOrigin === blackPawn) {
+          if (square.dataset.row == 1) {
+            showPromotionMenu(square, "Black");
+          } else if (
+            lastMove.pieceOrigin === whitePawn &&
+            Number(square.dataset.row) ===
+              Number(lastMove.square.dataset.row) - 1
+          ) {
+            if (
+              Number(square.dataset.column) ===
+              Number(lastMove.square.dataset.column)
+            ) {
+              lastMove.square.querySelector(".pieces").remove();
+            }
+          }
         }
+        lastMove = { pieceOrigin, squareOrigin, square };
         changeTurn();
       } else {
         squareOrigin.appendChild(pieceSelected);
@@ -1096,6 +1186,7 @@ function movePiece(square) {
         } else if (pieceOrigin === blackPawn && square.dataset.row == 1) {
           showPromotionMenu(square, "Black");
         }
+        lastMove = { pieceOrigin, squareOrigin, square };
         changeTurn();
       } else {
         squareOrigin.appendChild(pieceSelected);
@@ -1121,6 +1212,7 @@ function movePiece(square) {
         .appendChild(
           getTowerInitialPosition(whiteTower2).querySelector(".pieces")
         );
+      lastMove = { pieceOrigin, squareOrigin, square };
       changeTurn();
     }
   } else if (
@@ -1136,6 +1228,7 @@ function movePiece(square) {
         .appendChild(
           getTowerInitialPosition(whiteTower1).querySelector(".pieces")
         );
+      lastMove = { pieceOrigin, squareOrigin, square };
       changeTurn();
     }
   } else if (
@@ -1151,6 +1244,7 @@ function movePiece(square) {
         .appendChild(
           getTowerInitialPosition(blackTower2).querySelector(".pieces")
         );
+      lastMove = { pieceOrigin, squareOrigin, square };
       changeTurn();
     }
   } else if (
@@ -1166,10 +1260,11 @@ function movePiece(square) {
         .appendChild(
           getTowerInitialPosition(blackTower1).querySelector(".pieces")
         );
+      lastMove = { pieceOrigin, squareOrigin, square };
       changeTurn();
     }
   }
-  squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor; // Restore the original color
+  squareOrigin.style.backgroundColor = squareOrigin.dataset.originalColor;
   pieceSelected = null;
   squareOrigin = null;
 }
