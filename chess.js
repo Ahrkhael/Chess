@@ -1,4 +1,4 @@
-const baseUrl = "chess"
+const baseUrl = "."
 
 // At the beginning, we must create the board
 const board = document.getElementById("board");
